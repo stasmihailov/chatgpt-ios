@@ -7,15 +7,8 @@
 
 import SwiftUI
 
-struct ChatThread {
-    var id: String;
-    var name: String;
-    var messages: [ChatMessage];
-    var pinned: Bool;
-}
-
 struct ChatLabel: View {
-    var thread: ChatThread
+    var thread: ChatThreadData
     
     var body: some View {
         if thread.pinned {
@@ -26,7 +19,7 @@ struct ChatLabel: View {
 }
 
 struct ChatEntry: View {
-    var thread: ChatThread
+    var thread: ChatThreadData
     
     var body: some View {
         let lastMessage = thread.messages.last
@@ -34,17 +27,17 @@ struct ChatEntry: View {
             Chat(thread: thread)
         }.opacity(0)
         
+        let chatAvatar = Image("chatlist-chatgpt-logo")
+            .resizable()
+            .frame(width: 36, height: 36)
+        
         HStack {
-            Image("chatlist-chatgpt-logo")
-                .resizable()
-                .frame(width: 36, height: 36)
+            chatAvatar
             VStack {
                 HStack {
-                    Text(thread.name)
-                        .font(.headline)
+                    Text(thread.name).font(.headline)
                     Spacer()
-                    Text(lastMessage?.time ?? "")
-                        .subheadline()
+                    Text(lastMessage?.time ?? "").subheadline()
                 }.padding(.bottom, 2)
                 HStack {
                     Text(lastMessage?.text ?? "")
@@ -60,11 +53,11 @@ struct ChatEntry: View {
 }
 
 struct ChatList: View {
-    let threads: [ChatThread]
-    let firstPinnedIdx: Int
-    let firstOtherIdx: Int
+    @State var threads: [ChatThreadData]
+    var firstPinnedIdx: Int
+    var firstOtherIdx: Int
     
-    init(threads: [ChatThread]) {
+    init(threads: [ChatThreadData]) {
         self.threads = threads
         
         let firstPinnedIdx = threads.enumerated().first { $0.element.pinned == true }?.offset ?? -1
@@ -98,10 +91,8 @@ struct ChatList: View {
             chat
             .navigationBarTitle("Chats", displayMode: .inline)
             .navigationBarItems(
-                leading: Text("Edit")
-                    .foregroundColor(AppColors.accent),
-                trailing: Image(systemName: "square.and.pencil")
-                    .foregroundColor(AppColors.accent))
+                leading: ActionButton(),
+                trailing: WriteButton())
         }
     }
 }

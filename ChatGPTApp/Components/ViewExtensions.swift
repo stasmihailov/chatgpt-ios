@@ -6,11 +6,3 @@
 //
 
 import SwiftUI
-
-extension View {
-    func subheadline() -> some View {
-        self
-            .font(.subheadline)
-            .foregroundColor(.gray)
-    }
-}

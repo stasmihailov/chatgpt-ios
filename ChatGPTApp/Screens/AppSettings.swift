@@ -14,7 +14,7 @@ struct AppSettings: View {
         var settings = VStack {
             ClearableText(
                 placeholder: "Enter new API key",
-                text: apiKey
+                text: $apiKey
             )
 
             Text("Your key is securely stored in the Apple Keychain and leaves your device only during OpenAI API calls")
@@ -24,13 +24,13 @@ struct AppSettings: View {
             
             Spacer()
         }
-            .padding()
-            .background(AppColors.bg)
-            .frame(width: .infinity, height: .infinity)
             
         
         NavigationView {
             settings
+            .padding()
+            .background(AppColors.bg)
+            .frame(width: .infinity, height: .infinity)
             .navigationBarTitle("Settings", displayMode: .inline)
             .navigationBarItems(
                 trailing: Text("Done")
