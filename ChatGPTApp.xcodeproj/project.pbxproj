@@ -17,14 +17,16 @@
 		8F0E823F29EDABEE00047583 /* ClearableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E823E29EDABEE00047583 /* ClearableText.swift */; };
 		8F0E824329EEE07C00047583 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E824229EEE07C00047583 /* AppSettings.swift */; };
 		8F0E824629EEE0D700047583 /* ChatList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E824529EEE0D700047583 /* ChatList.swift */; };
-		8F0E824A29EEE13E00047583 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E824929EEE13E00047583 /* Data.swift */; };
+		8F0E824A29EEE13E00047583 /* StateData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E824929EEE13E00047583 /* StateData.swift */; };
 		8F0E824E29EEE24D00047583 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E824D29EEE24D00047583 /* Chat.swift */; };
 		8F0E825029EF029B00047583 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E824F29EF029B00047583 /* Common.swift */; };
 		8F0E825229EF51DE00047583 /* Landing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E825129EF51DE00047583 /* Landing.swift */; };
 		8F0E825429EF6B1700047583 /* ChatSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E825329EF6B1700047583 /* ChatSettings.swift */; };
 		8F533D3029EFFF4600D7B389 /* ResizableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D2F29EFFF4600D7B389 /* ResizableText.swift */; };
 		8F533D3229F04C5B00D7B389 /* Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D3129F04C5B00D7B389 /* Buttons.swift */; };
-		8F533D3529F0509A00D7B389 /* DataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D3429F0509A00D7B389 /* DataTypes.swift */; };
+		8FF238D129F061F000CE47D7 /* TestScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF238D029F061F000CE47D7 /* TestScreen.swift */; };
+		8FF238D429F1594900CE47D7 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF238D329F1594900CE47D7 /* State.swift */; };
+		8FF238D629F1622900CE47D7 /* OpenAIApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF238D529F1622900CE47D7 /* OpenAIApi.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,14 +60,16 @@
 		8F0E823E29EDABEE00047583 /* ClearableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearableText.swift; sourceTree = "<group>"; };
 		8F0E824229EEE07C00047583 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		8F0E824529EEE0D700047583 /* ChatList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatList.swift; sourceTree = "<group>"; };
-		8F0E824929EEE13E00047583 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		8F0E824929EEE13E00047583 /* StateData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateData.swift; sourceTree = "<group>"; };
 		8F0E824D29EEE24D00047583 /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		8F0E824F29EF029B00047583 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		8F0E825129EF51DE00047583 /* Landing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Landing.swift; sourceTree = "<group>"; };
 		8F0E825329EF6B1700047583 /* ChatSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSettings.swift; sourceTree = "<group>"; };
 		8F533D2F29EFFF4600D7B389 /* ResizableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResizableText.swift; sourceTree = "<group>"; };
 		8F533D3129F04C5B00D7B389 /* Buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buttons.swift; sourceTree = "<group>"; };
-		8F533D3429F0509A00D7B389 /* DataTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTypes.swift; sourceTree = "<group>"; };
+		8FF238D029F061F000CE47D7 /* TestScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestScreen.swift; sourceTree = "<group>"; };
+		8FF238D329F1594900CE47D7 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
+		8FF238D529F1622900CE47D7 /* OpenAIApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAIApi.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,8 +126,10 @@
 				8F0E821529ED9D8200047583 /* ContentView.swift */,
 				8F0E821729ED9D8300047583 /* Assets.xcassets */,
 				8F0E821929ED9D8300047583 /* Preview Content */,
-				8F0E824929EEE13E00047583 /* Data.swift */,
-				8F533D3429F0509A00D7B389 /* DataTypes.swift */,
+				8FF238D329F1594900CE47D7 /* State.swift */,
+				8F0E824929EEE13E00047583 /* StateData.swift */,
+				8FF238D029F061F000CE47D7 /* TestScreen.swift */,
+				8FF238D529F1622900CE47D7 /* OpenAIApi.swift */,
 			);
 			path = ChatGPTApp;
 			sourceTree = "<group>";
@@ -167,11 +173,11 @@
 		8F0E824429EEE0C600047583 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				8F0E824229EEE07C00047583 /* AppSettings.swift */,
+				8F0E825129EF51DE00047583 /* Landing.swift */,
 				8F0E824529EEE0D700047583 /* ChatList.swift */,
 				8F0E824D29EEE24D00047583 /* Chat.swift */,
-				8F0E825129EF51DE00047583 /* Landing.swift */,
 				8F0E825329EF6B1700047583 /* ChatSettings.swift */,
+				8F0E824229EEE07C00047583 /* AppSettings.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -307,16 +313,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F533D3029EFFF4600D7B389 /* ResizableText.swift in Sources */,
-				8F0E824A29EEE13E00047583 /* Data.swift in Sources */,
+				8F0E824A29EEE13E00047583 /* StateData.swift in Sources */,
 				8F0E825229EF51DE00047583 /* Landing.swift in Sources */,
 				8F533D3229F04C5B00D7B389 /* Buttons.swift in Sources */,
 				8F0E825429EF6B1700047583 /* ChatSettings.swift in Sources */,
 				8F0E824629EEE0D700047583 /* ChatList.swift in Sources */,
-				8F533D3529F0509A00D7B389 /* DataTypes.swift in Sources */,
+				8FF238D629F1622900CE47D7 /* OpenAIApi.swift in Sources */,
 				8F0E821629ED9D8200047583 /* ContentView.swift in Sources */,
+				8FF238D429F1594900CE47D7 /* State.swift in Sources */,
 				8F0E824E29EEE24D00047583 /* Chat.swift in Sources */,
 				8F0E823F29EDABEE00047583 /* ClearableText.swift in Sources */,
 				8F0E824329EEE07C00047583 /* AppSettings.swift in Sources */,
+				8FF238D129F061F000CE47D7 /* TestScreen.swift in Sources */,
 				8F0E825029EF029B00047583 /* Common.swift in Sources */,
 				8F0E821429ED9D8200047583 /* ChatGPTAppApp.swift in Sources */,
 			);

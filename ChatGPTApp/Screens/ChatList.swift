@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChatLabel: View {
-    var thread: ChatThreadData
+    var thread: TChat
     
     var body: some View {
         if thread.pinned {
@@ -19,8 +19,8 @@ struct ChatLabel: View {
 }
 
 struct ChatEntry: View {
-    var thread: ChatThreadData
-    
+    @ObservedObject var thread: TChat
+
     var body: some View {
         let lastMessage = thread.messages.last
         let nav = NavigationLink("") {
@@ -53,36 +53,24 @@ struct ChatEntry: View {
 }
 
 struct ChatList: View {
-    @State var threads: [ChatThreadData]
-    var firstPinnedIdx: Int
-    var firstOtherIdx: Int
-    
-    init(threads: [ChatThreadData]) {
-        self.threads = threads
-        
-        let firstPinnedIdx = threads.enumerated().first { $0.element.pinned == true }?.offset ?? -1
-        let firstOtherIdx = threads.enumerated().first { $0.element.pinned == false }?.offset ?? -1
-        
-        if (firstOtherIdx >= 0 && firstOtherIdx >= 0) {
-            self.firstPinnedIdx = firstPinnedIdx
-            self.firstOtherIdx = firstOtherIdx
-        } else {
-            self.firstPinnedIdx = -1
-            self.firstOtherIdx = -1
-        }
-    }
-    
+    @EnvironmentObject var chats: TChats
+
     var body: some View {
+        let chatList = chats.chats.enumerated()
+
+        var firstPinnedIdx = chatList.first { $0.element.pinned }?.offset ?? -1
+        var firstOtherIdx = firstPinnedIdx < 0 ? -1 : chatList.first { !$0.element.pinned }?.offset ?? -1
+        
         let chat = VStack {
             List {
-                ForEach(0..<threads.count) { idx in
+                ForEach(0..<chats.chats.count) { idx in
                     if idx == firstPinnedIdx {
                         Text("Pinned Chats").subheadline()
                     } else if idx == firstOtherIdx {
                         Text("Other Chats").subheadline()
                     }
 
-                    ChatEntry(thread: threads[idx])
+                    ChatEntry(thread: chats.chats[idx])
                 }
             }.listStyle(PlainListStyle())
         }
@@ -99,6 +87,7 @@ struct ChatList: View {
 
 struct ChatList_Previews: PreviewProvider {
     static var previews: some View {
-        ChatList(threads: threads)
+        ChatList()
+            .environmentObject(threads)
     }
 }

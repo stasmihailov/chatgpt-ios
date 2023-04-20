@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct ChatSettings: View {
+    @ObservedObject var chat: TChat
     @State var threadName: String
+    
+    init(chat: TChat) {
+        self.chat = chat
+        self.threadName = chat.name
+    }
     
     var body: some View {
         let settings = VStack {
@@ -18,14 +24,21 @@ struct ChatSettings: View {
             Spacer()
         }
         
+        let backButton = Button("Back") {
+        }
+        
+        let doneButton = Button("Done") {
+            chat.name = threadName
+        }
+        
         NavigationView {
             settings
             .padding()
             .background(AppColors.bg)
             .frame(width: .infinity, height: .infinity)
             .navigationBarItems(
-                leading: Text("Back").foregroundColor(AppColors.accent),
-                trailing: Text("Done").foregroundColor(AppColors.accent))
+                leading: backButton,
+                trailing: doneButton)
         }
             
     }
@@ -34,7 +47,7 @@ struct ChatSettings: View {
 struct ChatSettings_Previews: PreviewProvider {
     struct ChatSettingsWrapper: View {
         var body: some View {
-            ChatSettings(threadName: "Some thread name")
+            ChatSettings(chat: threads.chats[0])
         }
     }
     

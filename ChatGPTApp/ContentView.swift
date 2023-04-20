@@ -10,7 +10,7 @@ import SwiftUI
 struct AppBody: View {
     var body: some View {
         TabView {
-            ChatList(threads: threads)
+            ChatList()
             .tabItem {
                 Image(systemName: "message")
                 Text("Chats")
@@ -33,5 +33,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(threads)
     }
 }

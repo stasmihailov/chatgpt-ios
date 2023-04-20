@@ -32,12 +32,18 @@ struct ChatInput: View {
 }
 
 struct ChatParametersButton: View {
+    @ObservedObject var chat: TChat
+    
     var body: some View {
         Image(systemName: "slider.horizontal.3")
             .padding(.leading, 8)
             .padding(.trailing, 12)
             .padding(.bottom, 12)
             .foregroundColor(Color(.systemGray))
+            .background(
+                NavigationLink("xxxx") {
+                    ChatSettings(chat: chat)
+                })
     }
 }
 
@@ -49,7 +55,11 @@ struct ChatSendButton: View {
         let button = Image(systemName: "paperplane.fill")
             .padding(8)
         
-        Button(action: action) {
+        Button(action: {
+            if canSend {
+                action()
+            }
+        }) {
             if !canSend {
                 button
                     .foregroundColor(Color(.systemGray))
@@ -60,7 +70,7 @@ struct ChatSendButton: View {
                     .background(Color.green)
                     .clipShape(Circle())
             }
-        }
+        }.disabled(!canSend)
     }
 }
 
@@ -77,7 +87,7 @@ enum ChatMessageState {
 
 struct ChatMessage: View {
     let state: ChatMessageState = .SENT
-    let message: ChatMessageData
+    let message: TChatMsg
 
     var body: some View {
         let chatAvatar = Image(message.source == .ASSISTANT
@@ -106,7 +116,7 @@ struct ChatMessage: View {
 }
 
 struct NewChatBody: View {
-    @Binding var thread: ChatThreadData
+    @ObservedObject var thread: TChat
     
     struct ChatModelPicker: View {
         @Binding var model: String
@@ -136,7 +146,6 @@ struct NewChatBody: View {
             Text("Enter a new message to start the chat. Select a model above (you can change it later)")
                 .foregroundColor(Color(UIColor.systemGray))
                 .multilineTextAlignment(.center)
-                .navigationTitle(thread.name)
         }
         .padding(20)
         Spacer()
@@ -144,7 +153,7 @@ struct NewChatBody: View {
 }
 
 struct ExistingChatBody: View {
-    let thread: ChatThreadData
+    @ObservedObject var thread: TChat
 
     var body: some View {
         List {
@@ -165,27 +174,43 @@ struct ExistingChatBody: View {
 
 struct Chat: View {
     @State var message = ""
-    @State var thread: ChatThreadData
+    @ObservedObject var thread: TChat
+    
+    func message(source: TChatMsgRole, text: String) -> TChatMsg {
+        return TChatMsg(id: UUID().uuidString, source: source, time: "21:47", text: text)
+    }
     
     var body: some View {
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
-            ChatParametersButton()
+            ChatParametersButton(chat: thread)
             ChatInput(message: $message)
             ChatSendButton(canSend: !message.isEmpty) {
+                let msg = message
+                
+                thread.messages.append(message(source: .USER, text: msg))
+                message = ""
+
+                let response = OpenAIApi.shared.sendMessage(message: msg)
+                thread.messages.append(message(source: .ASSISTANT, text: response))
+                if thread.name.isEmpty {
+                    thread.name = msg.prefix(20) + "..."
+                }
             }
         }
         .padding(10)
         .background(AppColors.bg)
         
-        VStack(spacing: 0) {
-            if thread.messages.isEmpty {
-                NewChatBody(thread: $thread)
-            } else {
-                ExistingChatBody(thread: thread)
-                    .frame(maxHeight: .infinity)
-            }
+        NavigationView {
+            VStack(spacing: 0) {
+                if thread.messages.isEmpty {
+                    NewChatBody(thread: thread)
+                } else {
+                    ExistingChatBody(thread: thread)
+                        .frame(maxHeight: .infinity)
+                }
                 
-            messageInput
+                messageInput
+            }
         }
         // .toolbar(.hidden, for: .tabBar)
     }
@@ -193,6 +218,6 @@ struct Chat: View {
 
 struct Chat_Previews: PreviewProvider {
     static var previews: some View {
-        Chat(thread: threads[0])
+        Chat(thread: threads.chats[0])
     }
 }
