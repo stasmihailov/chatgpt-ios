@@ -21,9 +21,18 @@ struct ActionButton: View {
 }
 
 struct WriteButton: View {
+    let action: () -> Void
+    
     var body: some View {
-        Image(systemName: "square.and.pencil")
+        let image = Image(systemName: "square.and.pencil")
             .foregroundColor(AppColors.accent)
+        
+        image
+//        Button {
+//            Chat(thread: thread)
+//        } label: {
+//            image
+//        }
     }
 }
 

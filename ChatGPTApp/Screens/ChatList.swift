@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChatLabel: View {
-    var thread: TChat
+    var thread: EChat
     
     var body: some View {
         if thread.pinned {
@@ -19,10 +19,10 @@ struct ChatLabel: View {
 }
 
 struct ChatEntry: View {
-    @ObservedObject var thread: TChat
+    @ObservedObject var thread: EChat
 
     var body: some View {
-        let lastMessage = thread.messages.last
+        let lastMessage = thread.messageList.last
         let nav = NavigationLink("") {
             Chat(thread: thread)
         }.opacity(0)
@@ -35,9 +35,9 @@ struct ChatEntry: View {
             chatAvatar
             VStack {
                 HStack {
-                    Text(thread.name).font(.headline)
+                    Text(thread.name!).font(.headline)
                     Spacer()
-                    Text(lastMessage?.time ?? "").subheadline()
+                    Text(lastMessage?.time?.timeString() ?? "").subheadline()
                 }.padding(.bottom, 2)
                 HStack {
                     Text(lastMessage?.text ?? "")
@@ -53,7 +53,7 @@ struct ChatEntry: View {
 }
 
 struct ChatList: View {
-    @EnvironmentObject var chats: TChats
+    @EnvironmentObject var chats: EChats
 
     var body: some View {
         let chatList = chats.chats.enumerated()
@@ -80,14 +80,16 @@ struct ChatList: View {
             .navigationBarTitle("Chats", displayMode: .inline)
             .navigationBarItems(
                 leading: ActionButton(),
-                trailing: WriteButton())
+                trailing: WriteButton() {
+                    
+                })
         }
     }
 }
-
-struct ChatList_Previews: PreviewProvider {
-    static var previews: some View {
-        ChatList()
-            .environmentObject(threads)
-    }
-}
+//
+//struct ChatList_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ChatList()
+//            .environmentObject(EChat())
+//    }
+//}

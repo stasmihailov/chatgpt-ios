@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct ChatSettings: View {
-    @ObservedObject var chat: TChat
+    @ObservedObject var chat: EChat
     @State var threadName: String
     
-    init(chat: TChat) {
+    init(chat: EChat) {
         self.chat = chat
-        self.threadName = chat.name
+        self.threadName = chat.name!
     }
     
     var body: some View {
@@ -29,6 +29,7 @@ struct ChatSettings: View {
         
         let doneButton = Button("Done") {
             chat.name = threadName
+            Persistence.shared.saveContext()
         }
         
         NavigationView {
@@ -43,15 +44,15 @@ struct ChatSettings: View {
             
     }
 }
-
-struct ChatSettings_Previews: PreviewProvider {
-    struct ChatSettingsWrapper: View {
-        var body: some View {
-            ChatSettings(chat: threads.chats[0])
-        }
-    }
-    
-    static var previews: some View {
-        ChatSettingsWrapper()
-    }
-}
+//
+//struct ChatSettings_Previews: PreviewProvider {
+//    struct ChatSettingsWrapper: View {
+//        var body: some View {
+//            ChatSettings(chat: ...)
+//        }
+//    }
+//
+//    static var previews: some View {
+//        ChatSettingsWrapper()
+//    }
+//}

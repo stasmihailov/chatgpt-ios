@@ -32,7 +32,7 @@ struct ChatInput: View {
 }
 
 struct ChatParametersButton: View {
-    @ObservedObject var chat: TChat
+    @ObservedObject var chat: EChat
     
     var body: some View {
         Image(systemName: "slider.horizontal.3")
@@ -85,9 +85,24 @@ enum ChatMessageState {
     case SENDING, SENT;
 }
 
+class DateUtils {
+    static let shared = DateUtils()
+    let fmt = DateFormatter()
+
+    init() {
+        fmt.timeStyle = .short
+    }
+}
+
+extension Date {
+    func timeString() -> String {
+        return DateUtils.shared.fmt.string(from: self)
+    }
+}
+
 struct ChatMessage: View {
     let state: ChatMessageState = .SENT
-    let message: TChatMsg
+    let message: EChatMsg
 
     var body: some View {
         let chatAvatar = Image(message.source == .ASSISTANT
@@ -99,13 +114,13 @@ struct ChatMessage: View {
                 chatAvatar
                     .padding(.top, 4)
                     .padding(.trailing, 8)
-                Text(message.text)
+                Text(message.text!)
                 Spacer()
             }
             HStack {
                 Spacer()
                 if state == .SENT {
-                    Text(message.time).subheadline()
+                    Text(message.time!.timeString()).subheadline()
                 } else {
                     Text("...").subheadline()
                 }
@@ -116,7 +131,7 @@ struct ChatMessage: View {
 }
 
 struct NewChatBody: View {
-    @ObservedObject var thread: TChat
+    @ObservedObject var thread: EChat
     
     struct ChatModelPicker: View {
         @Binding var model: String
@@ -141,7 +156,7 @@ struct NewChatBody: View {
 
     var body: some View {
         VStack {
-            ChatModelPicker(model: $thread.model)
+            ChatModelPicker(model: thread.modelBinding)
                 .padding(.bottom, 64)
             Text("Enter a new message to start the chat. Select a model above (you can change it later)")
                 .foregroundColor(Color(UIColor.systemGray))
@@ -153,13 +168,15 @@ struct NewChatBody: View {
 }
 
 struct ExistingChatBody: View {
-    @ObservedObject var thread: TChat
+    @ObservedObject var thread: EChat
 
     var body: some View {
+        let messages = thread.messageList.reversed()
+        
         List {
-            ForEach(thread.messages.reversed(), id: \.id) { message in
+            ForEach(messages, id: \.self) { message in
                 ChatMessage(message: message)
-                .navigationTitle(thread.name)
+                .navigationTitle(thread.name!)
                 .navigationBarItems(trailing: SearchButton())
                 .listRowBackground(message.source == .USER
                                    ? Color.white
@@ -174,11 +191,7 @@ struct ExistingChatBody: View {
 
 struct Chat: View {
     @State var message = ""
-    @ObservedObject var thread: TChat
-    
-    func message(source: TChatMsgRole, text: String) -> TChatMsg {
-        return TChatMsg(id: UUID().uuidString, source: source, time: "21:47", text: text)
-    }
+    @ObservedObject var thread: EChat
     
     var body: some View {
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
@@ -187,12 +200,12 @@ struct Chat: View {
             ChatSendButton(canSend: !message.isEmpty) {
                 let msg = message
                 
-                thread.messages.append(message(source: .USER, text: msg))
+                thread.newMessage(source: .USER, text: msg)
                 message = ""
 
                 let response = OpenAIApi.shared.sendMessage(message: msg)
-                thread.messages.append(message(source: .ASSISTANT, text: response))
-                if thread.name.isEmpty {
+                thread.newMessage(source: .ASSISTANT, text: response)
+                if thread.name!.isEmpty {
                     thread.name = msg.prefix(20) + "..."
                 }
             }
@@ -202,7 +215,7 @@ struct Chat: View {
         
         NavigationView {
             VStack(spacing: 0) {
-                if thread.messages.isEmpty {
+                if thread.messageList.isEmpty {
                     NewChatBody(thread: thread)
                 } else {
                     ExistingChatBody(thread: thread)
@@ -215,9 +228,9 @@ struct Chat: View {
         // .toolbar(.hidden, for: .tabBar)
     }
 }
-
-struct Chat_Previews: PreviewProvider {
-    static var previews: some View {
-        Chat(thread: threads.chats[0])
-    }
-}
+//
+//struct Chat_Previews: PreviewProvider {
+//    static var previews: some View {
+//        Chat(thread: threads.chats[0])
+//    }
+//}

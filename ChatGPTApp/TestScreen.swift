@@ -29,7 +29,7 @@ class GithubUsers: ObservableObject {
         getUsers()
     }
 
-    func get§Users() {
+    func getUsers() {
         self.state = .LOADING
         APIService.shared.getUsers()
             .sink { completion in

@@ -24,15 +24,11 @@ struct AppBody: View {
     }
 }
 
-struct ContentView: View {
-    var body: some View {
-        AppBody()
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
+struct AppBody_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
-            .environmentObject(threads)
+        let chats: EChats = Persistence.shared.fetchChats()
+        
+        AppBody()
+            .environmentObject(chats)
     }
 }

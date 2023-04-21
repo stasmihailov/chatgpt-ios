@@ -8,6 +8,25 @@
 import XCTest
 @testable import ChatGPTApp
 
+final class KeychainManagerTests: XCTestCase {
+
+    func testSavesKey() throws {
+        let someToken = "cool-token"
+
+        let keychain = KeychainManager.shared
+        if keychain.getApiToken() == .ok(someToken) {
+            XCTAssertEqual(keychain.deleteApiToken(), .ok)
+        }
+        XCTAssertEqual(keychain.getApiToken(), .notFound)
+        
+        let saveResult = keychain.saveApiToken(someToken)
+        XCTAssertEqual(saveResult, .ok)
+
+        let getResult = keychain.getApiToken()
+        XCTAssertEqual(getResult, .ok(someToken))
+    }
+}
+
 final class ChatGPTAppTests: XCTestCase {
 
     override func setUpWithError() throws {

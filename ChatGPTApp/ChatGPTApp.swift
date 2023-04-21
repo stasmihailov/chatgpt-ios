@@ -8,10 +8,13 @@
 import SwiftUI
 
 @main
-struct ChatGPTAppApp: App {
+struct ChatGPTApp: App {
     var body: some Scene {
+        let chats: EChats = Persistence.shared.fetchChats()
+        
         WindowGroup {
-            ContentView()
+            AppBody()
+                .environmentObject(chats)
         }
     }
 }
