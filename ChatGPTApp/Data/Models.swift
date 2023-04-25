@@ -12,6 +12,7 @@ import SwiftUI
 
 @objc(EChat)
 public class EChat: NSManagedObject {
+    var nextMessage: EChatMsg? = nil
     var modelBinding: Binding<String> {
         Binding<String>(
             get: { self.model ?? "" },
@@ -41,6 +42,30 @@ public class EChat: NSManagedObject {
         }
         
         return msg
+    }
+
+    func prepareNextMessage(source: EChatMsgSource) -> EChatMsg {
+        let ctx = Persistence.shared.context
+        
+        let msg = EChatMsg(context: ctx)
+        msg.source = source
+        msg.text = ""
+        msg.time = Date()
+        msg.chat = self
+        
+        nextMessage = msg
+        
+        return msg
+    }
+    
+    func saveCurrentMessage() {
+        let ctx = Persistence.shared.context
+        
+        do {
+            try ctx.save()
+        } catch {
+            // on error
+        }
     }
 }
 

@@ -9,18 +9,40 @@ import SwiftUI
 
 struct AppSettings: View {
     @State var apiKey: String;
+    @EnvironmentObject var keychain: KeychainManagerWrapper
+    
+    private func onSaveSettings() {
+        let result = keychain.saveApiToken(apiKey)
+        switch result {
+        case .ok:
+            apiKey = ""
+            break
+        case .error(let err):
+            // panic mode
+            break
+        }
+    }
+    
+    private func onTokenReset() {
+        keychain.deleteApiToken()
+    }
     
     var body: some View {
         var settings = VStack {
             ClearableText(
                 placeholder: "Enter new API key",
-                text: $apiKey
+                text: $apiKey,
+                secure: true
             )
 
             Text("Your key is securely stored in the Apple Keychain and leaves your device only during OpenAI API calls")
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .font(Font.footnote)
+            
+            Button("Reset API Token") {
+                onTokenReset()
+            }
             
             Spacer()
         }
@@ -30,11 +52,11 @@ struct AppSettings: View {
             settings
             .padding()
             .background(AppColors.bg)
-            .frame(width: .infinity, height: .infinity)
             .navigationBarTitle("Settings", displayMode: .inline)
             .navigationBarItems(
-                trailing: Text("Done")
-                    .foregroundColor(AppColors.accent))
+                trailing: Button("Done") {
+                    onSaveSettings()
+                })
         }
     }
 }

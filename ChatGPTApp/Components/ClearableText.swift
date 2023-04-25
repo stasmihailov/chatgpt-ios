@@ -73,7 +73,6 @@ struct ClearableText: View {
                 .padding(16)
                 .background(Color.white)
                 .cornerRadius(8)
-                .frame(height: 32)
         } else {
             TextField(placeholder, text: $text)
                 .frame(height: 22)

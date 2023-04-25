@@ -9,9 +9,13 @@ import SwiftUI
 
 struct LandingActionButton: View {
     var active: Bool
+    var action: () -> Void
     
     var body: some View {
+        let btnAction = active ? action : {}
+        
         let actionButton = Button("Get Started") {
+            btnAction()
         }
         .buttonBorderShape(.roundedRectangle)
         
@@ -24,8 +28,9 @@ struct LandingActionButton: View {
 }
 
 struct Landing: View {
-    @State var apiKey: String
-    @State var isKeyCorrect: Bool
+    @Binding var apiKey: String
+    @State var isKeyCorrect: Bool = true
+    let onGetStarted: () -> Void
     
     var body: some View {
         VStack(spacing: 20) {
@@ -56,15 +61,39 @@ struct Landing: View {
             Text("Your key is securely stored in the Apple Keychain and only leaves your device during OpenAI API calls")
                 .font(.caption)
                 .multilineTextAlignment(.center)
-            LandingActionButton(active: !apiKey.isEmpty && isKeyCorrect)
-                .padding(16)
+            
+            let action = isKeyCorrect ? onGetStarted : {}
+            
+            LandingActionButton(active: !apiKey.isEmpty && isKeyCorrect) {
+                action()
+            }
+            .padding(16)
             Spacer()
         }.padding()
     }
 }
 
 struct Landing_Previews: PreviewProvider {
+    struct LandingWrapper: View {
+        @State var apiKey: String = ""
+        @State private var showAlert = false
+        
+        var body: some View {
+            Landing(apiKey: $apiKey,
+                    isKeyCorrect: true) {
+                showAlert = true
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(title: Text("Get Started!"),
+                      message: Text("The key is correct!"),
+                      dismissButton: .default(Text("OK")) {
+                    showAlert = false
+                })
+            }
+        }
+    }
+    
     static var previews: some View {
-        Landing(apiKey: "", isKeyCorrect: false)
+        LandingWrapper()
     }
 }

@@ -26,27 +26,21 @@ class Persistence {
     }
     
     func fetchChats() -> EChats {
-        do {
-            let req = EChat.fetchRequest()
-            let chats = try context.fetch(req)
-            if !chats.isEmpty {
-                return EChats(chats: chats)
-            }
-            
-            let chat = EChat(context: context)
-            chat.messages = NSSet(array: [])
-            chat.model = "chatgpt-4"
-            chat.name = "Empty chat"
-            chat.pinned = true
-            
-            context.insert(chat)
-            saveContext()
-            
-            return EChats(chats: [chat])
-        } catch {
-            // on error
-            return EChats(chats: [])
+        let req = EChat.fetchRequest()
+        if let chats = try? context.fetch(req), !chats.isEmpty {
+            return EChats(chats: chats)
         }
+        
+        let emptyChat = EChat(context: context)
+        emptyChat.messages = NSSet(array: [])
+        emptyChat.model = "chatgpt-4"
+        emptyChat.name = "Empty chat"
+        emptyChat.pinned = true
+        
+        context.insert(emptyChat)
+        saveContext()
+        
+        return EChats(chats: [emptyChat])
     }
 
     func saveContext() {

@@ -46,26 +46,89 @@ class KeychainQueries {
     }
 }
 
-class KeychainManager {
-    static let shared = KeychainManager()
-    
-    private let queries = KeychainQueries()
-    
+protocol KeychainManager: ObservableObject {
+    func findApiToken() -> GetTokenResult
+    func getApiToken() -> String?
+    func saveApiToken(_ tokenStr: String) -> ModifyTokenResult
+    func deleteApiToken() -> ModifyTokenResult
+}
+
+class KeychainManagerWrapper: KeychainManager, ObservableObject {
+    @Published var tokenExists: Bool = false
+
+    private let _findApiToken: () -> GetTokenResult
+    private let _getApiToken: () -> String?
+    private let _saveApiToken: (String) -> ModifyTokenResult
+    private let _deleteApiToken: () -> ModifyTokenResult
+
+    init<T: KeychainManager>(_ wrapped: T) {
+        _findApiToken = wrapped.findApiToken
+        _getApiToken = wrapped.getApiToken
+        _saveApiToken = wrapped.saveApiToken
+        _deleteApiToken = wrapped.deleteApiToken
+        
+        resetState()
+    }
+
+    func findApiToken() -> GetTokenResult {
+        return _findApiToken()
+    }
+
+    func getApiToken() -> String? {
+        return _getApiToken()
+    }
+
     func saveApiToken(_ tokenStr: String) -> ModifyTokenResult {
+        resetState()
+        return _saveApiToken(tokenStr)
+    }
+
+    func deleteApiToken() -> ModifyTokenResult {
+        resetState()
+        return _deleteApiToken()
+    }
+    
+    func resetState() {
+        tokenExists = getApiToken() != nil
+    }
+}
+
+class KeychainManagerImpl: ObservableObject {
+    private let queries = KeychainQueries()
+}
+
+extension KeychainManagerImpl: KeychainManager {
+    func saveApiToken(_ tokenStr: String) -> ModifyTokenResult {
+        if tokenStr.isEmpty {
+            return .error("empty key")
+        }
+        
         let token = tokenStr.data(using: String.Encoding.utf8)!
         
-        var result = getApiToken() == .notFound
+        var result = findApiToken() == .notFound
         ? queries.doSave(token)
         : queries.doUpdate(token)
 
         guard result == errSecSuccess else {
             return .error(errorStr(from: result))
         }
-        
+
         return .ok
     }
     
-    func getApiToken() -> GetTokenResult {
+    func getApiToken() -> String? {
+        let token = findApiToken()
+        switch token {
+        case .notFound:
+            return nil
+        case .error:
+            return nil
+        case .ok(let tokenStr):
+            return tokenStr
+        }
+    }
+
+    func findApiToken() -> GetTokenResult {
         let query: [String: Any] = queries.query([
             kSecReturnData as String: kCFBooleanTrue,
             kSecMatchLimit as String: kSecMatchLimitOne,
@@ -91,7 +154,7 @@ class KeychainManager {
         guard result == errSecSuccess else {
             return .error(errorStr(from: result))
         }
-        
+
         return .ok
     }
 

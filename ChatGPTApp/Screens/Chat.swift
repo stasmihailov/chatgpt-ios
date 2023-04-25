@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 extension View {
     public func flip() -> some View {
@@ -191,23 +192,18 @@ struct ExistingChatBody: View {
 
 struct Chat: View {
     @State var message = ""
+    @State var showAlert = false
+    @State var alertText = ""
     @ObservedObject var thread: EChat
+    @EnvironmentObject var keychain: KeychainManagerWrapper
+    @EnvironmentObject var api: OpenAIApiWrapper
     
     var body: some View {
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
             ChatParametersButton(chat: thread)
             ChatInput(message: $message)
             ChatSendButton(canSend: !message.isEmpty) {
-                let msg = message
-                
-                thread.newMessage(source: .USER, text: msg)
-                message = ""
-
-                let response = OpenAIApi.shared.sendMessage(message: msg)
-                thread.newMessage(source: .ASSISTANT, text: response)
-                if thread.name!.isEmpty {
-                    thread.name = msg.prefix(20) + "..."
-                }
+                sendMessage()
             }
         }
         .padding(10)
@@ -225,7 +221,43 @@ struct Chat: View {
                 messageInput
             }
         }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Error"),
+                  message: Text(alertText),
+                  dismissButton: .default(Text("OK")) {
+                showAlert = false
+                alertText = ""
+            })
+        }
         // .toolbar(.hidden, for: .tabBar)
+    }
+    
+    private func sendMessage() {
+        let msg = message
+        thread.newMessage(source: .USER, text: msg)
+        message = ""
+        
+        let response = thread.prepareNextMessage(source: .ASSISTANT)
+        
+        guard let token = keychain.getApiToken() else {
+            return
+        }
+
+        api.chatCompletion(for: thread, token: token)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    thread.saveCurrentMessage()
+                    break
+                case .failure(let err):
+                    alertText = err.error
+                    showAlert = true
+                }
+            }, receiveValue: { value in
+                response.text?.append(value)
+                response.didChangeValue(forKey: "text")
+            }).store(in: &api.cancellables)
     }
 }
 //
