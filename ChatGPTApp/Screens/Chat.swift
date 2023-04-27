@@ -223,6 +223,10 @@ struct Chat: View {
             ChatParametersButton(chat: thread)
             ChatInput(message: $message)
             ChatSendButton(canSend: !message.isEmpty) {
+                if (!lastResponse.text.isEmpty) {
+                    flushLastMessage()
+                }
+                
                 sendMessage()
             }
         }
@@ -252,6 +256,12 @@ struct Chat: View {
         // .toolbar(.hidden, for: .tabBar)
     }
     
+    private func flushLastMessage() {
+        thread.addResponse(response: lastResponse)
+        lastResponse.reset(source: .ASSISTANT)
+        api.cancelCurrent()
+    }
+    
     private func sendMessage() {
         guard let token = keychain.getApiToken() else {
             print("token is empty")
@@ -268,8 +278,7 @@ struct Chat: View {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    thread.addResponse(response: lastResponse)
-                    lastResponse.reset(source: .ASSISTANT)
+                    flushLastMessage()
                     break
                 case .failure(let err):
                     alertText = err.error

@@ -96,6 +96,11 @@ class OpenAIApiWrapper: ObservableObject {
         self._chatCompletion = delegate.chatCompletion
     }
     
+    func cancelCurrent() {
+        self.cancellables.forEach({ $0.cancel() })
+        self.cancellables = []
+    }
+    
     func chatCompletion(for chat: EChat, token: String) -> PassthroughSubject<String, RuntimeError> {
         return _chatCompletion(chat, token)
     }
