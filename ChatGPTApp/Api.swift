@@ -60,13 +60,14 @@ class EventSourceParser: NSObject, URLSessionDataDelegate {
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         let stringData = String(data: data, encoding: .utf8)!
 
-        print("sending: " + stringData)
         let error = Coders.decode(error: stringData)
         if error != nil {
+            print("sending error: " + stringData)
             messages.send(completion: .failure(RuntimeError(error!)))
             return
         }
         
+        print("sending: " + stringData)
         EventSourceParser.parseChunks(from: stringData)
             .forEach { messages.send($0) }
     }
@@ -76,6 +77,7 @@ class EventSourceParser: NSObject, URLSessionDataDelegate {
             print("Error: \(error.localizedDescription)")
             messages.send(completion: .failure(RuntimeError(error.localizedDescription)))
         } else {
+            print("Finished")
             messages.send(completion: .finished)
         }
     }
@@ -112,16 +114,25 @@ class OpenAIApiImpl: OpenAIApi {
             eventSource.messages.send(completion: .failure(RuntimeError("cannot read token")))
             return eventSource.messages
         }
+        let messages = eventSource.messages
 
         var req = URLRequest(url: URL(string: "https://api.openai.com/v1/chat/completions")!)
         req.httpMethod = "POST"
         req.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         do {
-            let body = Coders.encode(messages: chat.messageList)
+            let messagesJson = Coders.encode(messages: chat.messageList)
+            let body: [String : Any] = [
+                "model": "gpt-3.5-turbo", // chat.model!,
+                "user": "masteryoda",
+                "stream": true,
+                "messages": messagesJson,
+            ]
+
             req.httpBody = try JSONSerialization.data(withJSONObject: body)
         } catch {
-            // panic
+            messages.send(completion: .failure(RuntimeError("cannot serialise request")))
+            return messages
         }
 
         let queue = OperationQueue()
@@ -129,7 +140,7 @@ class OpenAIApiImpl: OpenAIApi {
             .dataTask(with: req)
         dataTask.resume()
         
-        return eventSource.messages
+        return messages
     }
 }
 
@@ -144,11 +155,13 @@ class Coders {
     }
     
     public static func encode(messages: [EChatMsg]) -> [[String: String]] {
-        let chatMessages: [[String: String]] = messages.map({ [
-            "role": encode(role: $0.source),
-            "content": $0.text!,
-        ] })
-        
+        let chatMessages: [[String: String]] = messages
+            .sorted(by: { $0.time! < $1.time! })
+            .map({ [
+                "role": encode(role: $0.source),
+                "content": $0.text!,
+            ] })
+            
         var allMessages: [[String: String]] = [
             [
                 "role": "system",

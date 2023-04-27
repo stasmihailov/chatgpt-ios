@@ -10,6 +10,33 @@ import Foundation
 import CoreData
 import SwiftUI
 
+class LWMsg: ObservableObject {
+    @Published var text: String
+
+    var time: Date
+    var source: EChatMsgSource
+    
+    init(text: String = "", time: Date = Date(), source: EChatMsgSource) {
+        self.text = text
+        self.time = time
+        self.source = source
+    }
+    
+    func reset(source: EChatMsgSource) {
+        self.text = ""
+        self.time = Date()
+        self.source = source
+    }
+    
+    static func from(_ chatMsg: EChatMsg) -> LWMsg {
+        var msg = LWMsg(source: chatMsg.source)
+        msg.text = chatMsg.text!
+        msg.time = chatMsg.time!
+        
+        return msg
+    }
+}
+
 @objc(EChat)
 public class EChat: NSManagedObject {
     var nextMessage: EChatMsg? = nil
@@ -44,28 +71,24 @@ public class EChat: NSManagedObject {
         return msg
     }
 
-    func prepareNextMessage(source: EChatMsgSource) -> EChatMsg {
+    func addResponse(response: LWMsg) -> EChatMsg {
         let ctx = Persistence.shared.context
         
         let msg = EChatMsg(context: ctx)
-        msg.source = source
-        msg.text = ""
-        msg.time = Date()
+        msg.source = response.source
+        msg.text = response.text
+        msg.time = response.time
         msg.chat = self
         
         nextMessage = msg
-        
-        return msg
-    }
-    
-    func saveCurrentMessage() {
-        let ctx = Persistence.shared.context
         
         do {
             try ctx.save()
         } catch {
             // on error
         }
+
+        return msg
     }
 }
 

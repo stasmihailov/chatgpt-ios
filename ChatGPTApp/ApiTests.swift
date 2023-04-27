@@ -21,20 +21,13 @@ final class EventSourceTests: XCTestCase {
     }
 }
 
-class ApiTests: XCTestCase {
-    var cancellables: [AnyCancellable]
-    var keychain: KeychainManagerWrapper
-    var api: OpenAIApi
-    
-    override init() {
-        cancellables = []
-        keychain = KeychainManagerWrapper(KeychainManagerImpl())
-        api = OpenAIApiImpl(keychain: keychain)
-
-        super.init()
-    }
+final class ApiTests: XCTestCase {
+    var cancellables: [AnyCancellable] = []
 
     func testCompletion() throws {
+        let keychain = KeychainManagerWrapper(KeychainManagerImpl())
+        let api = OpenAIApiImpl(keychain: keychain)
+
         guard let token = keychain.getApiToken() else {
             throw RuntimeError("cannot read token")
         }
@@ -49,24 +42,25 @@ class ApiTests: XCTestCase {
         chat.messages = [
             msg
         ]
-        
-        let semaphore = DispatchSemaphore(value: 0)
 
         var actualValues: [String] = []
+        let expectation = XCTestExpectation(description: "Waiting for all messages")
         api.chatCompletion(for: chat, token: token)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
-                print("leaving the subscriber")
-                semaphore.signal()
+                switch completion {
+                case .finished:
+                    expectation.fulfill()
+                    break
+                case .failure(let err):
+                    XCTFail(err.error)
+                    break
+                }
             }, receiveValue: { value in
-                print("value: " + value)
                 actualValues.append(value)
             }).store(in: &cancellables)
 
-        let awaited = semaphore.wait(timeout: .now() + 10)
-        guard awaited == .success else {
-            throw RuntimeError("timed out while waiting for OpenAPI response")
-        }
+        wait(for: [expectation], timeout: 10)
         
         XCTAssertEqual(actualValues, ["cock"])
     }

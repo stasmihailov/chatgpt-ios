@@ -26,10 +26,12 @@
 		8F533D3229F04C5B00D7B389 /* Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D3129F04C5B00D7B389 /* Buttons.swift */; };
 		8F81075C29F816EC001AC2CE /* KeychainManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81075B29F816EC001AC2CE /* KeychainManagerTests.swift */; };
 		8F81075F29F81742001AC2CE /* ApiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81075E29F81742001AC2CE /* ApiTests.swift */; };
-		8F81076129F81DBA001AC2CE /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81076029F81DBA001AC2CE /* LandingUITests.swift */; };
 		8F81076A29F87950001AC2CE /* DebugSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81076929F87950001AC2CE /* DebugSettings.swift */; };
 		8F81076B29F87950001AC2CE /* DebugSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81076929F87950001AC2CE /* DebugSettings.swift */; };
 		8F81076C29F87950001AC2CE /* DebugSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81076929F87950001AC2CE /* DebugSettings.swift */; };
+		8F96531B29FADDA60051F2FF /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96531A29FADDA60051F2FF /* LandingUITests.swift */; };
+		8F96531C29FADDA60051F2FF /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96531A29FADDA60051F2FF /* LandingUITests.swift */; };
+		8F96531D29FADDA60051F2FF /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96531A29FADDA60051F2FF /* LandingUITests.swift */; };
 		8FF238D629F1622900CE47D7 /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF238D529F1622900CE47D7 /* Api.swift */; };
 		8FF2391429F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FF2391229F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld */; };
 		8FF2391629F1B13200CE47D7 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF2391529F1B13200CE47D7 /* Persistence.swift */; };
@@ -76,8 +78,8 @@
 		8F533D3129F04C5B00D7B389 /* Buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buttons.swift; sourceTree = "<group>"; };
 		8F81075B29F816EC001AC2CE /* KeychainManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManagerTests.swift; sourceTree = "<group>"; };
 		8F81075E29F81742001AC2CE /* ApiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiTests.swift; sourceTree = "<group>"; };
-		8F81076029F81DBA001AC2CE /* LandingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingUITests.swift; sourceTree = "<group>"; };
 		8F81076929F87950001AC2CE /* DebugSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettings.swift; sourceTree = "<group>"; };
+		8F96531A29FADDA60051F2FF /* LandingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingUITests.swift; sourceTree = "<group>"; };
 		8FF238D529F1622900CE47D7 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
 		8FF2391329F1B10100CE47D7 /* ChatGPTApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChatGPTApp.xcdatamodel; sourceTree = "<group>"; };
 		8FF2391529F1B13200CE47D7 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -187,7 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				8F0E825129EF51DE00047583 /* Landing.swift */,
-				8F81076029F81DBA001AC2CE /* LandingUITests.swift */,
+				8F96531A29FADDA60051F2FF /* LandingUITests.swift */,
 				8F0E824529EEE0D700047583 /* ChatList.swift */,
 				8F0E824D29EEE24D00047583 /* Chat.swift */,
 				8F0E825329EF6B1700047583 /* ChatSettings.swift */,
@@ -342,6 +344,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F81076A29F87950001AC2CE /* DebugSettings.swift in Sources */,
+				8F96531B29FADDA60051F2FF /* LandingUITests.swift in Sources */,
 				8F533D3029EFFF4600D7B389 /* ResizableText.swift in Sources */,
 				8FF2391629F1B13200CE47D7 /* Persistence.swift in Sources */,
 				8F0E825229EF51DE00047583 /* Landing.swift in Sources */,
@@ -366,6 +369,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F81075C29F816EC001AC2CE /* KeychainManagerTests.swift in Sources */,
+				8F96531C29FADDA60051F2FF /* LandingUITests.swift in Sources */,
 				8F81075F29F81742001AC2CE /* ApiTests.swift in Sources */,
 				8F81076B29F87950001AC2CE /* DebugSettings.swift in Sources */,
 				8F0E822529ED9D8300047583 /* ChatGPTAppTests.swift in Sources */,
@@ -377,7 +381,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8F0E823129ED9D8300047583 /* ChatGPTAppUITestsLaunchTests.swift in Sources */,
-				8F81076129F81DBA001AC2CE /* LandingUITests.swift in Sources */,
+				8F96531D29FADDA60051F2FF /* LandingUITests.swift in Sources */,
 				8F81076C29F87950001AC2CE /* DebugSettings.swift in Sources */,
 				8F0E822F29ED9D8300047583 /* ChatGPTAppUITests.swift in Sources */,
 			);
@@ -631,6 +635,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				"EXCLUDED_SOURCE_FILE_NAMES[arch=*]" = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.babochenko.ChatGPTAppUITests;

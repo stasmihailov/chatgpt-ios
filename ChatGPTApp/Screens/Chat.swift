@@ -44,7 +44,8 @@ struct ChatParametersButton: View {
             .background(
                 NavigationLink("xxxx") {
                     ChatSettings(chat: chat)
-                })
+                }
+            )
     }
 }
 
@@ -103,7 +104,7 @@ extension Date {
 
 struct ChatMessage: View {
     let state: ChatMessageState = .SENT
-    let message: EChatMsg
+    @ObservedObject var message: LWMsg
 
     var body: some View {
         let chatAvatar = Image(message.source == .ASSISTANT
@@ -115,13 +116,13 @@ struct ChatMessage: View {
                 chatAvatar
                     .padding(.top, 4)
                     .padding(.trailing, 8)
-                Text(message.text!)
+                Text(message.text)
                 Spacer()
             }
             HStack {
                 Spacer()
                 if state == .SENT {
-                    Text(message.time!.timeString()).subheadline()
+                    Text(message.time.timeString()).subheadline()
                 } else {
                     Text("...").subheadline()
                 }
@@ -144,8 +145,8 @@ struct NewChatBody: View {
                     .padding(.leading, 15)
                 
                 Picker("Model", selection: $model) {
-                    Text("chatgpt-3.5")
-                    Text("chatgpt-4")
+                    Text("gpt-3.5-turbo")
+                    Text("gpt-4")
                 }
                 .pickerStyle(.menu)
                 .padding(4)
@@ -170,19 +171,36 @@ struct NewChatBody: View {
 
 struct ExistingChatBody: View {
     @ObservedObject var thread: EChat
+    @ObservedObject var lastResponse: LWMsg
 
+    struct Msg: View {
+        let thread: String
+        @ObservedObject var msg: LWMsg
+        
+        var body: some View {
+            ChatMessage(message: msg)
+            .navigationTitle(thread)
+            .navigationBarItems(trailing: SearchButton())
+            .listRowBackground(msg.source == .USER
+                               ? Color.white
+                               : AppColors.bg)
+            .listRowSeparator(.hidden)
+        }
+    }
+    
     var body: some View {
-        let messages = thread.messageList.reversed()
+        let messages = thread
+            .messages!.compactMap { $0 as? EChatMsg }
+            .sorted(by: { $0.time! < $1.time! })
+            .reversed()
         
         List {
+            if (!lastResponse.text.isEmpty) {
+                Msg(thread: thread.name!, msg: lastResponse)
+            }
+
             ForEach(messages, id: \.self) { message in
-                ChatMessage(message: message)
-                .navigationTitle(thread.name!)
-                .navigationBarItems(trailing: SearchButton())
-                .listRowBackground(message.source == .USER
-                                   ? Color.white
-                                   : AppColors.bg)
-                .listRowSeparator(.hidden)
+                Msg(thread: thread.name!, msg: .from(message))
             }
         }
         .listStyle(PlainListStyle())
@@ -194,10 +212,12 @@ struct Chat: View {
     @State var message = ""
     @State var showAlert = false
     @State var alertText = ""
+    @StateObject var lastResponse: LWMsg = LWMsg(source: .ASSISTANT)
+
     @ObservedObject var thread: EChat
     @EnvironmentObject var keychain: KeychainManagerWrapper
     @EnvironmentObject var api: OpenAIApiWrapper
-    
+
     var body: some View {
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
             ChatParametersButton(chat: thread)
@@ -214,7 +234,7 @@ struct Chat: View {
                 if thread.messageList.isEmpty {
                     NewChatBody(thread: thread)
                 } else {
-                    ExistingChatBody(thread: thread)
+                    ExistingChatBody(thread: thread, lastResponse: lastResponse)
                         .frame(maxHeight: .infinity)
                 }
                 
@@ -233,36 +253,49 @@ struct Chat: View {
     }
     
     private func sendMessage() {
+        guard let token = keychain.getApiToken() else {
+            print("token is empty")
+            return
+        }
+
         let msg = message
         thread.newMessage(source: .USER, text: msg)
         message = ""
         
-        let response = thread.prepareNextMessage(source: .ASSISTANT)
-        
-        guard let token = keychain.getApiToken() else {
-            return
-        }
-
+        lastResponse.reset(source: .ASSISTANT)
         api.chatCompletion(for: thread, token: token)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    thread.saveCurrentMessage()
+                    thread.addResponse(response: lastResponse)
+                    lastResponse.reset(source: .ASSISTANT)
                     break
                 case .failure(let err):
                     alertText = err.error
                     showAlert = true
+                    break
                 }
             }, receiveValue: { value in
-                response.text?.append(value)
-                response.didChangeValue(forKey: "text")
+                print("next: " + value)
+                lastResponse.text.append(value)
             }).store(in: &api.cancellables)
     }
 }
-//
-//struct Chat_Previews: PreviewProvider {
-//    static var previews: some View {
-//        Chat(thread: threads.chats[0])
-//    }
-//}
+
+struct Chat_Previews: PreviewProvider {
+    static var keychain: KeychainManagerWrapper {
+        let keychain = KeychainManagerWrapper(KeychainManagerImpl())
+        
+        return keychain
+    }
+    
+    static var previews: some View {
+        let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
+        let thread = Persistence.shared.newChat()
+
+        Chat(thread: thread)
+            .environmentObject(keychain)
+            .environmentObject(api)
+    }
+}

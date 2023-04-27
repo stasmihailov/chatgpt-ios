@@ -25,21 +25,26 @@ class Persistence {
         context.automaticallyMergesChangesFromParent = true
     }
     
-    func fetchChats() -> EChats {
-        let req = EChat.fetchRequest()
-        if let chats = try? context.fetch(req), !chats.isEmpty {
-            return EChats(chats: chats)
-        }
-        
+    func newChat() -> EChat {
         let emptyChat = EChat(context: context)
         emptyChat.messages = NSSet(array: [])
-        emptyChat.model = "chatgpt-4"
+        emptyChat.model = "gpt-3.5-turbo"
         emptyChat.name = "Empty chat"
         emptyChat.pinned = true
         
         context.insert(emptyChat)
         saveContext()
         
+        return emptyChat
+    }
+    
+    func fetchChats() -> EChats {
+        let req = EChat.fetchRequest()
+        if let chats = try? context.fetch(req), !chats.isEmpty {
+            return EChats(chats: chats)
+        }
+        
+        let emptyChat = newChat()
         return EChats(chats: [emptyChat])
     }
 

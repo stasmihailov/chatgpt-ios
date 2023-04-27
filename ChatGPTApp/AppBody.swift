@@ -61,13 +61,13 @@ struct AppBody: View {
     init() {
         chats = Persistence.shared.fetchChats()
         
-        #if DEBUG
-            keychain = KeychainManagerWrapper(MockKeychainManager())
-            api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
-        #else
+//        #if DEBUG
+//            keychain = KeychainManagerWrapper(MockKeychainManager())
+//            api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
+//        #else
             keychain = KeychainManagerWrapper(KeychainManagerImpl())
             api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
-        #endif
+//        #endif
     }
     
     var body: some View {
