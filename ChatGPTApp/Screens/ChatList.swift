@@ -77,12 +77,17 @@ struct ChatList: View {
         
         NavigationView {
             chat
-            .navigationBarTitle("Chats", displayMode: .inline)
-            .navigationBarItems(
-                leading: ActionButton(),
-                trailing: WriteButton() {
-                    
-                })
+            .navigationTitle("Chats")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    ActionButton()
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    WriteButton() {
+                    }
+                }
+            }
         }
     }
 }

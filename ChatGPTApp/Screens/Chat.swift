@@ -180,7 +180,7 @@ struct ExistingChatBody: View {
         var body: some View {
             ChatMessage(message: msg)
             .navigationTitle(thread)
-            .navigationBarItems(trailing: SearchButton())
+            .navigationBarTitleDisplayMode(.inline)
             .listRowBackground(msg.source == .USER
                                ? Color.white
                                : AppColors.bg)
@@ -205,6 +205,11 @@ struct ExistingChatBody: View {
         }
         .listStyle(PlainListStyle())
         .flip()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                SearchButton()
+            }
+        }
     }
 }
 
@@ -232,18 +237,16 @@ struct Chat: View {
         }
         .padding(10)
         .background(AppColors.bg)
-        
-        NavigationView {
-            VStack(spacing: 0) {
-                if thread.messageList.isEmpty {
-                    NewChatBody(thread: thread)
-                } else {
-                    ExistingChatBody(thread: thread, lastResponse: lastResponse)
-                        .frame(maxHeight: .infinity)
-                }
-                
-                messageInput
+
+        VStack(spacing: 0) {
+            if thread.messageList.isEmpty {
+                NewChatBody(thread: thread)
+            } else {
+                ExistingChatBody(thread: thread, lastResponse: lastResponse)
+                    .frame(maxHeight: .infinity)
             }
+            
+            messageInput
         }
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Error"),
