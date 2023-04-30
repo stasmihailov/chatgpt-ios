@@ -7,94 +7,100 @@
 
 import SwiftUI
 
-struct ChatLabel: View {
-    var thread: EChat
+struct ChatList: View {
+    @State var newChat: EChat? = nil
+    @State var newChatIsActive: Bool = false
+
+    @EnvironmentObject var chats: EChats
     
     var body: some View {
-        if thread.pinned {
-            Image("chatlist-pin-on")
-        } else {
-        }
-    }
-}
+        let chatsList = chats.chats
+            .filter { !$0.messageList.isEmpty }
 
-struct ChatEntry: View {
-    @ObservedObject var thread: EChat
-
-    var body: some View {
-        let lastMessage = thread.messageList.last
-        let nav = NavigationLink("") {
-            Chat(thread: thread)
-        }.opacity(0)
-        
-        let chatAvatar = Image("chatlist-chatgpt-logo")
-            .resizable()
-            .frame(width: 36, height: 36)
-        
-        HStack {
-            chatAvatar
-            VStack {
-                HStack {
-                    Text(thread.name!).font(.headline)
-                    Spacer()
-                    Text(lastMessage?.time?.timeString() ?? "").subheadline()
-                }.padding(.bottom, 2)
-                HStack {
-                    Text(lastMessage?.text ?? "")
-                        .subheadline()
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                    Spacer()
-                    ChatLabel(thread: thread)
+        NavigationView {
+            Group {
+                if chatsList.isEmpty {
+                    ChatListPlaceholder()
+                } else {
+                    ExistingChatList()
                 }
             }
-        }.background(nav)
-    }
-}
-
-struct ChatList: View {
-    @EnvironmentObject var chats: EChats
-
-    var body: some View {
-        let chatList = chats.chats.enumerated()
-
-        var firstPinnedIdx = chatList.first { $0.element.pinned }?.offset ?? -1
-        var firstOtherIdx = firstPinnedIdx < 0 ? -1 : chatList.first { !$0.element.pinned }?.offset ?? -1
-        
-        let chat = VStack {
-            List {
-                ForEach(0..<chats.chats.count) { idx in
-                    if idx == firstPinnedIdx {
-                        Text("Pinned Chats").subheadline()
-                    } else if idx == firstOtherIdx {
-                        Text("Other Chats").subheadline()
-                    }
-
-                    ChatEntry(thread: chats.chats[idx])
-                }
-            }.listStyle(PlainListStyle())
-        }
-        
-        NavigationView {
-            chat
             .navigationTitle("Chats")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    ActionButton()
+                if !chatsList.isEmpty {
+                    deleteAllButton()
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    WriteButton() {
-                    }
-                }
+                newChatButton()
             }
         }
     }
+    
+    private func ChatListPlaceholder() -> some View {
+        VStack {
+            Text("Start a new chat by tapping the button above").subheadline()
+            Spacer()
+            
+            if newChat != nil {
+                NewChatNavigationLink()
+            }
+        }
+        .padding(.top, 100)
+    }
+    
+    private func ExistingChatList() -> some View {
+        let now = Date()
+        let sortedChats = chats.chats
+            .sorted { $0.pinned && !$1.pinned }
+            .sorted { $0.lastMessageTime ?? now > $1.lastMessageTime ?? now }
+        
+        return List {
+            ForEach(sortedChats, id: \.self) { chat in
+                ChatListCell(thread: chat)
+            }
+
+            if newChat != nil {
+                NewChatNavigationLink()
+            }
+        }.listStyle(PlainListStyle())
+    }
+    
+    private func deleteAllButton() -> ToolbarItem<(), some View> {
+        return ToolbarItem(placement: .navigationBarLeading) {
+            AppButtons.action(label: "Delete all") {
+                Persistence.shared.deleteAllEntities()
+            }
+        }
+    }
+    
+    private func newChatButton() -> ToolbarItem<(), some View> {
+        return ToolbarItem(placement: .navigationBarTrailing) {
+            AppButtons.write {
+                newChat = chats.newChat()
+                newChatIsActive = true
+            }
+        }
+    }
+    
+    private func NewChatNavigationLink() -> some View {
+        NavigationLink(
+            destination: Chat(thread: newChat!),
+            isActive: $newChatIsActive
+        ) {
+            EmptyView()
+        }.hidden()
+    }
 }
-//
-//struct ChatList_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ChatList()
-//            .environmentObject(EChat())
-//    }
-//}
+
+struct ChatList_Previews: PreviewProvider {
+    static var previews: some View {
+        let chats = Persistence.shared.fetchChats()
+        let keychain = KeychainManagerWrapper(KeychainManagerImpl())
+        let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
+    
+        ChatList()
+            .environmentObject(chats)
+            .environmentObject(keychain)
+            .environmentObject(api)
+    }
+}

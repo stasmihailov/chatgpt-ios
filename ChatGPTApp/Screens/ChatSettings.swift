@@ -8,40 +8,38 @@
 import SwiftUI
 
 struct ChatSettings: View {
-    @ObservedObject var chat: EChat
-    @State var threadName: String
+    @Binding var chatName: String
+
+    @State private var chatNameState: String
     
-    init(chat: EChat) {
-        self.chat = chat
-        self.threadName = chat.name!
+    init(chatName: Binding<String>) {
+        self._chatName = chatName
+        self.chatNameState = chatName.wrappedValue
     }
     
     var body: some View {
         let settings = VStack {
             Image("chatsettings-avatar")
-            ActionButton(label: "Set new chat icon")
-            ClearableText(placeholder: "Enter chat name", text: $threadName)
+            AppButtons.action(label: "Set new chat icon") {
+            }
+            ClearableText($chatNameState, placeholder: "Enter chat name")
             Spacer()
         }
         
-        let backButton = Button("Back") {
-        }
-        
         let doneButton = Button("Done") {
-            chat.name = threadName
+            chatName = chatNameState
             Persistence.shared.saveContext()
         }
-        
-        NavigationView {
-            settings
-            .padding()
-            .background(AppColors.bg)
-            .frame(width: .infinity, height: .infinity)
-            .navigationBarItems(
-                leading: backButton,
-                trailing: doneButton)
+    
+        settings
+        .padding()
+        .background(AppColors.bg)
+        .frame(width: .infinity, height: .infinity)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                doneButton
+            }
         }
-            
     }
 }
 //

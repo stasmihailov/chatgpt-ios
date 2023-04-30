@@ -29,9 +29,8 @@ struct AppSettings: View {
     
     var body: some View {
         var settings = VStack {
-            ClearableText(
+            ClearableText($apiKey,
                 placeholder: "Enter new API key",
-                text: $apiKey,
                 secure: true
             )
 

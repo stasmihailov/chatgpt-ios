@@ -8,24 +8,36 @@
 
 import SwiftUI
 
+struct ClearableText: View {
+    @Binding var text: String
+    var placeholder: String
+    var secure: Bool
+    
+    init(_ text: Binding<String>, placeholder: String, secure: Bool = false) {
+        self._text = text
+        self.placeholder = placeholder
+        self.secure = secure
+    }
+
+    var body: some View {
+        Group {
+            if secure {
+                SecureField(placeholder, text: $text)
+            } else {
+                TextField(placeholder, text: $text)
+            }
+        }
+        .frame(height: 22)
+        .showClearButton($text)
+        .padding(16)
+        .background(Color.white)
+        .cornerRadius(8)
+    }
+}
+
 extension View {
     func showClearButton(_ text: Binding<String>) -> some View {
         self.modifier(TextFieldClearButton(fieldText: text))
-    }
-}
-
-extension View {
-    func showUnderline() -> some View {
-        self.modifier(TextUnderlineModifier())
-    }
-}
-
-struct TextUnderlineModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content.overlay(VStack {
-            Divider().offset(x: 0, y: 20)
-                .padding()
-        })
     }
 }
 
@@ -54,33 +66,18 @@ struct TextFieldClearButton: ViewModifier {
     }
 }
 
-struct ClearableText: View {
-    var placeholder: String
-    @Binding var text: String
-    var secure: Bool
-    
-    init(placeholder: String, text: Binding<String>, secure: Bool = false) {
-        self.placeholder = placeholder
-        self._text = text
-        self.secure = secure
+extension ClearableText {
+    func showUnderline() -> some View {
+        self.modifier(TextUnderlineModifier())
     }
+}
 
-    var body: some View {
-        if secure {
-            SecureField(placeholder, text: $text)
-                .frame(height: 22)
-                .showClearButton($text)
-                .padding(16)
-                .background(Color.white)
-                .cornerRadius(8)
-        } else {
-            TextField(placeholder, text: $text)
-                .frame(height: 22)
-                .showClearButton($text)
-                .padding(16)
-                .background(Color.white)
-                .cornerRadius(8)
-        }
+struct TextUnderlineModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content.overlay(VStack {
+            Divider().offset(x: 0, y: 20)
+                .padding()
+        })
     }
 }
 
@@ -89,9 +86,7 @@ struct ClearableText_Previews: PreviewProvider {
         @State var text: String = ""
         
         var body: some View {
-            ClearableText(
-                placeholder: "ClearableText",
-                text: $text)
+            ClearableText($text, placeholder: "ClearableText")
         }
     }
 

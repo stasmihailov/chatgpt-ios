@@ -25,12 +25,31 @@ class Persistence {
         context.automaticallyMergesChangesFromParent = true
     }
     
+    func deleteAllEntities() {
+        deleteAllEntities(ofType: "EChat")
+        deleteAllEntities(ofType: "EChatMsg")
+    }
+    
+    private func deleteAllEntities(ofType type: String) {
+        let context = Persistence.shared.context
+
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: type)
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        do {
+            try context.execute(deleteRequest)
+            try context.save()
+        } catch let error as NSError {
+            print("Could not delete. \(error), \(error.userInfo)")
+        }
+    }
+    
     func newChat() -> EChat {
         let emptyChat = EChat(context: context)
         emptyChat.messages = NSSet(array: [])
         emptyChat.model = "gpt-3.5-turbo"
         emptyChat.name = "Empty chat"
-        emptyChat.pinned = true
+        emptyChat.pinned = false
         
         context.insert(emptyChat)
         saveContext()
@@ -50,7 +69,7 @@ class Persistence {
 
     func saveContext() {
         let ctx = container.viewContext
-        if ctx.hasChanges {
+        if !ctx.hasChanges {
             return
         }
         

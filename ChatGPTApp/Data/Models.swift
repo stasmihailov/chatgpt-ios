@@ -47,6 +47,12 @@ public class EChat: NSManagedObject {
         )
     }
     
+    var lastMessageTime: Date? {
+        get {
+            return self.messageList.last?.time
+        }
+    }
+    
     var messageList: [EChatMsg] {
         get {
             return self.messages?.compactMap { $0 as? EChatMsg } as! [EChatMsg]
@@ -90,10 +96,39 @@ public class EChat: NSManagedObject {
 
         return msg
     }
+    
+    static func ==(lhs: EChat, rhs: EChat) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 enum EChatMsgSource: String {
     case USER, ASSISTANT;
+}
+
+let userDateFormatter = {
+    let fmt = DateFormatter()
+    fmt.dateFormat = "dd MMM"
+    return fmt
+}()
+
+let userTimeFormatter = {
+    let fmt = DateFormatter()
+    fmt.timeStyle = .short
+    return fmt
+}()
+
+extension Date {
+    var userString: String {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let isBeforeToday = calendar.compare(self, to: today, toGranularity: .day) == .orderedAscending
+        if isBeforeToday {
+            return userDateFormatter.string(from: self)
+        } else {
+            return userTimeFormatter.string(from: self)
+        }
+    }
 }
 
 @objc(EChatMsg)
@@ -105,6 +140,12 @@ public class EChatMsg: NSManagedObject {
             self.sourceRaw = newValue.rawValue
         }
     }
+    
+    var lastTimeString: String {
+        get {
+            return time?.userString ?? ""
+        }
+    }
 }
 
 public class EChats: ObservableObject {
@@ -112,5 +153,12 @@ public class EChats: ObservableObject {
     
     init(chats: [EChat]) {
         self.chats = chats
+    }
+    
+    func newChat() -> EChat {
+        let chat =  Persistence.shared.newChat()
+        self.chats.append(chat)
+        
+        return chat
     }
 }

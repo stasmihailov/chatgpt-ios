@@ -48,7 +48,7 @@ struct Landing: View {
                      destination: URL(string: "https://platform.openai.com/account/api-keys")!)
             }
             VStack(spacing: 12) {
-                ClearableText(placeholder: "Your API key", text: $apiKey, secure: true)
+                ClearableText($apiKey, placeholder: "Your API key", secure: true)
                     .showUnderline()
                 if !isKeyCorrect {
                     Text("The key you entered is not working. Please double-check that you have entered the correct key and try again.")

@@ -16,94 +16,7 @@ extension View {
     }
 }
 
-struct ChatInput: View {
-    @Binding var message: String
-    
-    var body: some View {
-        ZStack {
-            ResizableText(string: $message)
-                .placeholder("Type a message", text: $message)
-                .padding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
-                .background(Color.white)
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .font(.body)
-            Text(message).opacity(0).padding(.all, 8)
-        }
-    }
-}
-
-struct ChatParametersButton: View {
-    @ObservedObject var chat: EChat
-    
-    var body: some View {
-        Image(systemName: "slider.horizontal.3")
-            .padding(.leading, 8)
-            .padding(.trailing, 12)
-            .padding(.bottom, 12)
-            .foregroundColor(Color(.systemGray))
-            .background(
-                NavigationLink("xxxx") {
-                    ChatSettings(chat: chat)
-                }
-            )
-    }
-}
-
-struct ChatSendButton: View {
-    var canSend: Bool
-    var action: () -> Void
-    
-    var body: some View {
-        let button = Image(systemName: "paperplane.fill")
-            .padding(8)
-        
-        Button(action: {
-            if canSend {
-                action()
-            }
-        }) {
-            if !canSend {
-                button
-                    .foregroundColor(Color(.systemGray))
-                    .clipShape(Circle())
-            } else {
-                button
-                    .foregroundColor(.white)
-                    .background(Color.green)
-                    .clipShape(Circle())
-            }
-        }.disabled(!canSend)
-    }
-}
-
-// TODO implement
-struct ChatScrollUpButton: View {
-    var body: some View {
-        EmptyView()
-    }
-}
-
-enum ChatMessageState {
-    case SENDING, SENT;
-}
-
-class DateUtils {
-    static let shared = DateUtils()
-    let fmt = DateFormatter()
-
-    init() {
-        fmt.timeStyle = .short
-    }
-}
-
-extension Date {
-    func timeString() -> String {
-        return DateUtils.shared.fmt.string(from: self)
-    }
-}
-
 struct ChatMessage: View {
-    let state: ChatMessageState = .SENT
     @ObservedObject var message: LWMsg
 
     var body: some View {
@@ -117,23 +30,73 @@ struct ChatMessage: View {
                     .padding(.top, 4)
                     .padding(.trailing, 8)
                 Text(message.text)
+                    .textSelection(.enabled)
                 Spacer()
             }
             HStack {
                 Spacer()
-                if state == .SENT {
-                    Text(message.time.timeString()).subheadline()
-                } else {
-                    Text("...").subheadline()
-                }
+                Text(message.time.userString).subheadline()
             }
         }
         .flip()
     }
 }
 
-struct NewChatBody: View {
+struct ExistingChatBody: View {
     @ObservedObject var thread: EChat
+    @ObservedObject var lastResponse: LWMsg
+    
+    var body: some View {
+        let messages = thread
+            .messages!.compactMap { $0 as? EChatMsg }
+            .sorted(by: { $0.time! < $1.time! })
+            .reversed()
+        
+        List {
+            if (!lastResponse.text.isEmpty) {
+                Msg(lastResponse)
+            }
+
+            ForEach(messages, id: \.self) { message in
+                Msg(.from(message))
+            }
+        }
+        .listStyle(PlainListStyle())
+        .flip()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                AppButtons.search()
+            }
+        }
+    }
+    
+    func Msg(_ msg: LWMsg) -> some View {
+        ChatMessage(message: msg)
+        .navigationTitle(thread.name!)
+        .navigationBarTitleDisplayMode(.inline)
+        .listRowBackground(msg.source == .USER
+                           ? Color.white
+                           : AppColors.bg)
+        .listRowSeparator(.hidden)
+    }
+}
+
+class LWChat: ObservableObject {
+    @Published var readyToSend: Bool = false
+    var message: String = ""
+    var chatModel: String
+    
+    init(model chatModel: String) {
+        self.chatModel = chatModel
+    }
+    
+    func clean() {
+        self.message = ""
+    }
+}
+
+struct NewChatBody: View {
+    @ObservedObject var chat: LWChat
     
     struct ChatModelPicker: View {
         @Binding var model: String
@@ -155,61 +118,49 @@ struct NewChatBody: View {
             }
         }
     }
-
+    
     var body: some View {
-        VStack {
-            ChatModelPicker(model: thread.modelBinding)
-                .padding(.bottom, 64)
-            Text("Enter a new message to start the chat. Select a model above (you can change it later)")
-                .foregroundColor(Color(UIColor.systemGray))
-                .multilineTextAlignment(.center)
+        VStack(spacing: 0) {
+            VStack {
+                ChatModelPicker(model: $chat.chatModel)
+                    .padding(.bottom, 64)
+                Text("Enter a new message to start the chat. Select a model above (you can change it later)")
+                    .foregroundColor(Color(UIColor.systemGray))
+                    .multilineTextAlignment(.center)
+            }
+            .padding(20)
+            Spacer()
+            
+            ChatInput(message: $chat.message) {
+                chat.readyToSend = true
+            }
+            .padding(10)
+            .background(AppColors.bg)
         }
-        .padding(20)
-        Spacer()
     }
 }
 
-struct ExistingChatBody: View {
-    @ObservedObject var thread: EChat
-    @ObservedObject var lastResponse: LWMsg
-
-    struct Msg: View {
-        let thread: String
-        @ObservedObject var msg: LWMsg
-        
-        var body: some View {
-            ChatMessage(message: msg)
-            .navigationTitle(thread)
-            .navigationBarTitleDisplayMode(.inline)
-            .listRowBackground(msg.source == .USER
-                               ? Color.white
-                               : AppColors.bg)
-            .listRowSeparator(.hidden)
+struct NewChat: View {
+    @ObservedObject var chat: LWChat = LWChat(model: "gpt-3.5-turbo")
+    @EnvironmentObject var chats: EChats
+    
+    var body: some View {
+        if !chat.readyToSend {
+            NewChatBody(chat: chat)
+                .onDisappear {
+                    chat.clean()
+                }
+        } else {
+            Chat(thread: createChat())
         }
     }
     
-    var body: some View {
-        let messages = thread
-            .messages!.compactMap { $0 as? EChatMsg }
-            .sorted(by: { $0.time! < $1.time! })
-            .reversed()
+    func createChat() -> EChat {
+        let chat = chats.newChat()
+        chat.model = self.chat.chatModel
+        chat.newMessage(source: .USER, text: self.chat.message)
         
-        List {
-            if (!lastResponse.text.isEmpty) {
-                Msg(thread: thread.name!, msg: lastResponse)
-            }
-
-            ForEach(messages, id: \.self) { message in
-                Msg(thread: thread.name!, msg: .from(message))
-            }
-        }
-        .listStyle(PlainListStyle())
-        .flip()
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                SearchButton()
-            }
-        }
+        return chat
     }
 }
 
@@ -225,9 +176,8 @@ struct Chat: View {
 
     var body: some View {
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
-            ChatParametersButton(chat: thread)
-            ChatInput(message: $message)
-            ChatSendButton(canSend: !message.isEmpty) {
+            chatParamsButton
+            ChatInput(message: $message) {
                 if (!lastResponse.text.isEmpty) {
                     flushLastMessage()
                 }
@@ -239,12 +189,8 @@ struct Chat: View {
         .background(AppColors.bg)
 
         VStack(spacing: 0) {
-            if thread.messageList.isEmpty {
-                NewChatBody(thread: thread)
-            } else {
-                ExistingChatBody(thread: thread, lastResponse: lastResponse)
-                    .frame(maxHeight: .infinity)
-            }
+            ExistingChatBody(thread: thread, lastResponse: lastResponse)
+                .frame(maxHeight: .infinity)
             
             messageInput
         }
@@ -257,6 +203,20 @@ struct Chat: View {
             })
         }
         // .toolbar(.hidden, for: .tabBar)
+    }
+    
+    
+    var chatParamsButton: some View {
+        Image(systemName: "slider.horizontal.3")
+            .padding(.leading, 8)
+            .padding(.trailing, 12)
+            .padding(.bottom, 12)
+            .foregroundColor(Color(.systemGray))
+            .background(
+                NavigationLink("xxxx") {
+                    ChatSettings(chatName: Binding.constant(thread.name ?? ""))
+                }
+            )
     }
     
     private func flushLastMessage() {
@@ -304,7 +264,7 @@ struct Chat_Previews: PreviewProvider {
     
     static var previews: some View {
         let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
-        let thread = Persistence.shared.newChat()
+        let thread = EChats(chats: []).newChat()
 
         Chat(thread: thread)
             .environmentObject(keychain)
