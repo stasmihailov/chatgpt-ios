@@ -35,11 +35,13 @@ struct ChatListCell: View {
         .swipeActions(edge: .leading) {
             Button(!thread.pinned ? "Pin" : "Unpin") {
                 thread.pinned.toggle()
+                Persistence.shared.saveContext()
             }.tint(.gray)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button("Delete") {
                 Persistence.shared.context.delete(thread)
+                Persistence.shared.saveContext()
             }.tint(.red)
         }
     }

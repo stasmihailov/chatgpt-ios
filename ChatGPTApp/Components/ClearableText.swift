@@ -30,7 +30,7 @@ struct ClearableText: View {
         .frame(height: 22)
         .showClearButton($text)
         .padding(16)
-        .background(Color.white)
+        .background(AppColors.systemBg)
         .cornerRadius(8)
     }
 }

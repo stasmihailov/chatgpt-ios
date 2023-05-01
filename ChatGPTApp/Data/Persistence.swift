@@ -77,7 +77,8 @@ class Persistence {
         do {
             try ctx.save()
         } catch {
-            // TODO show message to user
+            let nserror = error as NSError
+            print("Unresolved error \(nserror), \(nserror.userInfo)")
         }
     }
     

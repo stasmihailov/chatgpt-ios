@@ -25,5 +25,6 @@ struct AppColors {
     static let accent = Color.accentColor
     static let accentDestructive = Color.red
     static let chatResponseBg = Color(hex: "F7F7F7")
+    static let systemBg = Color(.systemBackground)
     static let bg = Color(UIColor.secondarySystemBackground)
 }

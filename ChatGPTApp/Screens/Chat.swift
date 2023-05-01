@@ -75,7 +75,7 @@ struct ExistingChatBody: View {
         .navigationTitle(thread.name!)
         .navigationBarTitleDisplayMode(.inline)
         .listRowBackground(msg.source == .USER
-                           ? Color.white
+                           ? AppColors.systemBg
                            : AppColors.bg)
         .listRowSeparator(.hidden)
     }

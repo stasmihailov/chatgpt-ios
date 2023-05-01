@@ -31,7 +31,7 @@ struct ChatInput: View {
             MultilineText($message)
                 .placeholder("Type a message", text: $message)
                 .padding(EdgeInsets(top: 6, leading: 12, bottom: 6, trailing: 12))
-                .background(Color.white)
+                .background(AppColors.systemBg)
                 .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                 .font(.body)
             Text(message).opacity(0).padding(.all, 8)
@@ -48,7 +48,7 @@ struct ChatInput: View {
                     .clipShape(Circle())
             } else {
                 button
-                    .foregroundColor(.white)
+                    .foregroundColor(AppColors.systemBg)
                     .background(Color.green)
                     .clipShape(Circle())
             }

@@ -74,9 +74,9 @@ struct ChatList: View {
         List {
             ForEach(chats, id: \.self) { chat in
                 ChatListCell(thread: chat)
-                    .listRowBackground(chat.pinned
-                                       ? AppColors.chatResponseBg
-                                       : Color.white)
+//                    .listRowBackground(chat.pinned
+//                                       ? AppColors.chatResponseBg
+//                                       : AppColors.systemBg)
             }
 
             if newChat != nil {
