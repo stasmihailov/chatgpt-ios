@@ -41,13 +41,13 @@ struct ChatList: View {
             .navigationTitle("Chats")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if !chats.isEmpty {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        AppButtons.action(label: "Delete all") {
-                            Persistence.shared.deleteAllEntities()
-                        }
-                    }
-                }
+//                if !chats.isEmpty {
+//                    ToolbarItem(placement: .navigationBarLeading) {
+//                        AppButtons.action(label: "Delete all") {
+//                            Persistence.shared.deleteAllEntities()
+//                        }
+//                    }
+//                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     AppButtons.write {
                         newChat = ChatList.persistence.newChat()

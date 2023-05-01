@@ -32,13 +32,14 @@ class Persistence {
     
     private func deleteAllEntities(ofType type: String) {
         let context = Persistence.shared.context
+        let coordinator = context.persistentStoreCoordinator
 
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: type)
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
 
         do {
-            try context.execute(deleteRequest)
-            try context.save()
+            try coordinator?.execute(deleteRequest, with: context)
+            context.reset() // reset the context to get rid of the cached values
         } catch let error as NSError {
             print("Could not delete. \(error), \(error.userInfo)")
         }

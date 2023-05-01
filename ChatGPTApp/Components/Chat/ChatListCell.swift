@@ -37,6 +37,11 @@ struct ChatListCell: View {
                 thread.pinned.toggle()
             }.tint(.gray)
         }
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            Button("Delete") {
+                Persistence.shared.context.delete(thread)
+            }.tint(.red)
+        }
     }
     
     var chatAvatar: some View {
