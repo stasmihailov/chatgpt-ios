@@ -41,7 +41,6 @@ struct ChatListCell: View {
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button("Delete") {
                 Persistence.shared.context.delete(thread)
-                Persistence.shared.saveContext()
             }.tint(.red)
         }
     }
