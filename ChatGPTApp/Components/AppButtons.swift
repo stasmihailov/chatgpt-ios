@@ -20,6 +20,13 @@ final class AppButtons {
         }
     }
     
+    static func chatSettings(_ action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: "slider.horizontal.3")
+                .foregroundColor(AppColors.accent)
+        }
+    }
+    
     static func action(label: String, _ action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(label)

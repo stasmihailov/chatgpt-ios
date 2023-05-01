@@ -111,6 +111,7 @@ struct Chat: View {
     @State var message = ""
     @State var showAlert = false
     @State var alertText = ""
+    @State var chatSettingsIsActive = false
     @StateObject var lastResponse: LWMsg = LWMsg(source: .ASSISTANT)
 
     @ObservedObject var thread: EChat
@@ -165,16 +166,18 @@ struct Chat: View {
     }
     
     var chatParamsButton: some View {
-        Image(systemName: "slider.horizontal.3")
-            .padding(.leading, 8)
-            .padding(.trailing, 12)
-            .padding(.bottom, 12)
-            .foregroundColor(Color(.systemGray))
-            .background(
-                NavigationLink("xxxx") {
-                    ChatSettings(chat: $thread.name)
-                }
-            )
+        AppButtons.chatSettings {
+            self.chatSettingsIsActive = true
+        }
+        .padding(.leading, 8)
+        .padding(.trailing, 12)
+        .padding(.bottom, 12)
+        .background(NavigationLink(
+            destination: ChatSettings(chat: $thread.name),
+            isActive: $chatSettingsIsActive) {
+                EmptyView()
+            }
+        )
     }
     
     func onSend() {
