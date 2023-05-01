@@ -8,18 +8,31 @@
 import SwiftUI
 
 struct ChatList: View {
+    @EnvironmentObject var keychain: KeychainManagerWrapper
+    @EnvironmentObject var api: OpenAIApiWrapper
+    static var persistence = Persistence.shared
+
+    @FetchRequest(
+        entity: EChat.entity(),
+        sortDescriptors: [],
+        predicate: NSPredicate(format: "messages.@count > 0")
+    ) var allChats: FetchedResults<EChat>
+    
+    var chats: [EChat] {
+        get {
+            return allChats
+                .sorted { $0.lastMessageTime > $1.lastMessageTime }
+                .sorted(using: SortDescriptor(\EChat.pinned, order: .reverse))
+        }
+    }
+
     @State var newChat: EChat? = nil
     @State var newChatIsActive: Bool = false
 
-    @EnvironmentObject var chats: EChats
-    
     var body: some View {
-        let chatsList = chats.chats
-            .filter { !$0.messageList.isEmpty }
-
         NavigationView {
             Group {
-                if chatsList.isEmpty {
+                if chats.isEmpty {
                     ChatListPlaceholder()
                 } else {
                     ExistingChatList()
@@ -28,10 +41,19 @@ struct ChatList: View {
             .navigationTitle("Chats")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if !chatsList.isEmpty {
-                    deleteAllButton()
+                if !chats.isEmpty {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        AppButtons.action(label: "Delete all") {
+                            Persistence.shared.deleteAllEntities()
+                        }
+                    }
                 }
-                newChatButton()
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    AppButtons.write {
+                        newChat = ChatList.persistence.newChat()
+                        newChatIsActive = true
+                    }
+                }
             }
         }
     }
@@ -49,14 +71,12 @@ struct ChatList: View {
     }
     
     private func ExistingChatList() -> some View {
-        let now = Date()
-        let sortedChats = chats.chats
-            .sorted { $0.pinned && !$1.pinned }
-            .sorted { $0.lastMessageTime ?? now > $1.lastMessageTime ?? now }
-        
-        return List {
-            ForEach(sortedChats, id: \.self) { chat in
+        List {
+            ForEach(chats, id: \.self) { chat in
                 ChatListCell(thread: chat)
+                    .listRowBackground(chat.pinned
+                                       ? AppColors.chatResponseBg
+                                       : Color.white)
             }
 
             if newChat != nil {
@@ -64,24 +84,7 @@ struct ChatList: View {
             }
         }.listStyle(PlainListStyle())
     }
-    
-    private func deleteAllButton() -> ToolbarItem<(), some View> {
-        return ToolbarItem(placement: .navigationBarLeading) {
-            AppButtons.action(label: "Delete all") {
-                Persistence.shared.deleteAllEntities()
-            }
-        }
-    }
-    
-    private func newChatButton() -> ToolbarItem<(), some View> {
-        return ToolbarItem(placement: .navigationBarTrailing) {
-            AppButtons.write {
-                newChat = chats.newChat()
-                newChatIsActive = true
-            }
-        }
-    }
-    
+
     private func NewChatNavigationLink() -> some View {
         NavigationLink(
             destination: Chat(thread: newChat!),
@@ -94,12 +97,10 @@ struct ChatList: View {
 
 struct ChatList_Previews: PreviewProvider {
     static var previews: some View {
-        let chats = Persistence.shared.fetchChats()
         let keychain = KeychainManagerWrapper(KeychainManagerImpl())
         let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
     
         ChatList()
-            .environmentObject(chats)
             .environmentObject(keychain)
             .environmentObject(api)
     }

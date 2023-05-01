@@ -81,130 +81,88 @@ struct ExistingChatBody: View {
     }
 }
 
-class LWChat: ObservableObject {
-    @Published var readyToSend: Bool = false
-    var message: String = ""
-    var chatModel: String
-    
-    init(model chatModel: String) {
-        self.chatModel = chatModel
-    }
-    
-    func clean() {
-        self.message = ""
-    }
-}
-
-struct NewChatBody: View {
-    @ObservedObject var chat: LWChat
-    
-    struct ChatModelPicker: View {
-        @Binding var model: String
-        
-        var body: some View {
-            VStack(alignment: .leading) {
-                Text("Model")
-                    .font(.caption)
-                    .padding(.leading, 15)
-                
-                Picker("Model", selection: $model) {
-                    Text("gpt-3.5-turbo")
-                    Text("gpt-4")
-                }
-                .pickerStyle(.menu)
-                .padding(4)
-                .background(AppColors.bg)
-                .cornerRadius(10)
-            }
-        }
-    }
+struct ChatModelPicker: View {
+    @Binding var model: String?
     
     var body: some View {
-        VStack(spacing: 0) {
-            VStack {
-                ChatModelPicker(model: $chat.chatModel)
-                    .padding(.bottom, 64)
-                Text("Enter a new message to start the chat. Select a model above (you can change it later)")
-                    .foregroundColor(Color(UIColor.systemGray))
-                    .multilineTextAlignment(.center)
-            }
-            .padding(20)
-            Spacer()
+        VStack(alignment: .leading) {
+            Text("Model")
+                .font(.caption)
+                .padding(.leading, 15)
             
-            ChatInput(message: $chat.message) {
-                chat.readyToSend = true
+            Picker("Model", selection: $model) {
+                Text("gpt-3.5-turbo")
+                Text("gpt-4")
             }
-            .padding(10)
+            .pickerStyle(.menu)
+            .padding(4)
             .background(AppColors.bg)
+            .cornerRadius(10)
         }
-    }
-}
-
-struct NewChat: View {
-    @ObservedObject var chat: LWChat = LWChat(model: "gpt-3.5-turbo")
-    @EnvironmentObject var chats: EChats
-    
-    var body: some View {
-        if !chat.readyToSend {
-            NewChatBody(chat: chat)
-                .onDisappear {
-                    chat.clean()
-                }
-        } else {
-            Chat(thread: createChat())
-        }
-    }
-    
-    func createChat() -> EChat {
-        let chat = chats.newChat()
-        chat.model = self.chat.chatModel
-        chat.newMessage(source: .USER, text: self.chat.message)
-        
-        return chat
     }
 }
 
 struct Chat: View {
+    @EnvironmentObject var keychain: KeychainManagerWrapper
+    @EnvironmentObject var api: OpenAIApiWrapper
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    var persistence = Persistence.shared
+
     @State var message = ""
     @State var showAlert = false
     @State var alertText = ""
     @StateObject var lastResponse: LWMsg = LWMsg(source: .ASSISTANT)
 
     @ObservedObject var thread: EChat
-    @EnvironmentObject var keychain: KeychainManagerWrapper
-    @EnvironmentObject var api: OpenAIApiWrapper
 
     var body: some View {
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
             chatParamsButton
             ChatInput(message: $message) {
-                if (!lastResponse.text.isEmpty) {
-                    flushLastMessage()
-                }
-                
-                sendMessage()
+                onSend()
             }
         }
         .padding(10)
         .background(AppColors.bg)
 
         VStack(spacing: 0) {
-            ExistingChatBody(thread: thread, lastResponse: lastResponse)
-                .frame(maxHeight: .infinity)
-            
+            if thread.messageList.isEmpty {
+                VStack {
+                    ChatModelPicker(model: $thread.model)
+                        .padding(.bottom, 64)
+                    Text("Enter a new message to start the chat. Select a model above (you can change it later)")
+                        .foregroundColor(Color(UIColor.systemGray))
+                        .multilineTextAlignment(.center)
+                }
+                .padding(20)
+                Spacer()
+            } else {
+                ExistingChatBody(thread: thread, lastResponse: lastResponse)
+                    .frame(maxHeight: .infinity)
+            }
+
             messageInput
         }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarItems(leading: Button(action: {
+            if thread.messageList.isEmpty {
+                discardChat()
+            }
+            self.presentationMode.wrappedValue.dismiss()
+        }) {
+            HStack {
+                Image(systemName: "chevron.left")
+                Text("Chats")
+            }
+        })
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Error"),
                   message: Text(alertText),
                   dismissButton: .default(Text("OK")) {
-                showAlert = false
-                alertText = ""
+                onHideAlert()
             })
         }
-        // .toolbar(.hidden, for: .tabBar)
     }
-    
     
     var chatParamsButton: some View {
         Image(systemName: "slider.horizontal.3")
@@ -214,9 +172,26 @@ struct Chat: View {
             .foregroundColor(Color(.systemGray))
             .background(
                 NavigationLink("xxxx") {
-                    ChatSettings(chatName: Binding.constant(thread.name ?? ""))
+                    ChatSettings(chat: $thread.name)
                 }
             )
+    }
+    
+    func onSend() {
+        if (!lastResponse.text.isEmpty) {
+            flushLastMessage()
+        }
+        
+        sendMessage()
+    }
+    
+    func onHideAlert() {
+        showAlert = false
+        alertText = ""
+    }
+
+    private func discardChat() {
+        persistence.context.delete(thread)
     }
     
     private func flushLastMessage() {
@@ -224,7 +199,7 @@ struct Chat: View {
         lastResponse.reset(source: .ASSISTANT)
         api.cancelCurrent()
     }
-    
+
     private func sendMessage() {
         guard let token = keychain.getApiToken() else {
             print("token is empty")
@@ -241,16 +216,15 @@ struct Chat: View {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    flushLastMessage()
+                    self.flushLastMessage()
                     break
                 case .failure(let err):
-                    alertText = err.error
-                    showAlert = true
+                    self.alertText = err.error
+                    self.showAlert = true
                     break
                 }
             }, receiveValue: { value in
-                print("next: " + value)
-                lastResponse.text.append(value)
+                self.lastResponse.text.append(value)
             }).store(in: &api.cancellables)
     }
 }
@@ -264,7 +238,7 @@ struct Chat_Previews: PreviewProvider {
     
     static var previews: some View {
         let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
-        let thread = EChats(chats: []).newChat()
+        let thread = Persistence.shared.newChat()
 
         Chat(thread: thread)
             .environmentObject(keychain)

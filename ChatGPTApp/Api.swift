@@ -66,8 +66,7 @@ class EventSourceParser: NSObject, URLSessionDataDelegate {
             messages.send(completion: .failure(RuntimeError(error!)))
             return
         }
-        
-        print("sending: " + stringData)
+
         EventSourceParser.parseChunks(from: stringData)
             .forEach { messages.send($0) }
     }
@@ -77,7 +76,6 @@ class EventSourceParser: NSObject, URLSessionDataDelegate {
             print("Error: \(error.localizedDescription)")
             messages.send(completion: .failure(RuntimeError(error.localizedDescription)))
         } else {
-            print("Finished")
             messages.send(completion: .finished)
         }
     }

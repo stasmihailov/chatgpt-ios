@@ -15,12 +15,12 @@ final class PersistenceTests: XCTestCase {
     
     func testDeleteEverything() throws {
         var chat = persistence.newChat()
-        XCTAssertEqual(persistence.fetchChats().chats, [chat])
+        XCTAssertEqual(persistence.fetchChats(), [chat])
         
         persistence.deleteAllEntities()
-        XCTAssertEqual(persistence.fetchChats().chats, [])
+        XCTAssertEqual(persistence.fetchChats(), [])
         
         chat = persistence.newChat()
-        XCTAssertEqual(persistence.fetchChats().chats, [chat])
+        XCTAssertEqual(persistence.fetchChats(), [chat])
     }
 }

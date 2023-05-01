@@ -54,27 +54,19 @@ struct AppContainer: View {
 }
 
 struct AppBody: View {
-    var chats: EChats
     var keychain: KeychainManagerWrapper
     var api: OpenAIApiWrapper
     
     init() {
-        chats = Persistence.shared.fetchChats()
-        
-//        #if DEBUG
-//            keychain = KeychainManagerWrapper(MockKeychainManager())
-//            api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
-//        #else
-            keychain = KeychainManagerWrapper(KeychainManagerImpl())
-            api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
-//        #endif
+        keychain = KeychainManagerWrapper(KeychainManagerImpl())
+        api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
     }
     
     var body: some View {
         AppContainer()
-            .environmentObject(chats)
             .environmentObject(keychain)
             .environmentObject(api)
+            .environment(\.managedObjectContext, Persistence.shared.container.viewContext)
     }
 }
 

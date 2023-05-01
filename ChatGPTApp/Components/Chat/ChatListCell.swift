@@ -33,7 +33,7 @@ struct ChatListCell: View {
         }
         .background(navLink)
         .swipeActions(edge: .leading) {
-            Button("Pin") {
+            Button(!thread.pinned ? "Pin" : "Unpin") {
                 thread.pinned.toggle()
             }.tint(.gray)
         }

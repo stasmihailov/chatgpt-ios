@@ -47,9 +47,9 @@ public class EChat: NSManagedObject {
         )
     }
     
-    var lastMessageTime: Date? {
+    var lastMessageTime: Date {
         get {
-            return self.messageList.last?.time
+            return self.messageList.last?.time ?? Date.distantPast
         }
     }
     
@@ -145,20 +145,5 @@ public class EChatMsg: NSManagedObject {
         get {
             return time?.userString ?? ""
         }
-    }
-}
-
-public class EChats: ObservableObject {
-    @Published var chats: [EChat]
-    
-    init(chats: [EChat]) {
-        self.chats = chats
-    }
-    
-    func newChat() -> EChat {
-        let chat =  Persistence.shared.newChat()
-        self.chats.append(chat)
-        
-        return chat
     }
 }

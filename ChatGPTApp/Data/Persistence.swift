@@ -57,14 +57,14 @@ class Persistence {
         return emptyChat
     }
     
-    func fetchChats() -> EChats {
+    func fetchChats() -> [EChat] {
         let req = EChat.fetchRequest()
         if let chats = try? context.fetch(req), !chats.isEmpty {
-            return EChats(chats: chats)
+            return chats
         }
         
         let emptyChat = newChat()
-        return EChats(chats: [emptyChat])
+        return [emptyChat]
     }
 
     func saveContext() {

@@ -11,6 +11,14 @@ struct ChatInput: View {
     @Binding var message: String
     let onSend: () -> Void
     
+    var canSend: Bool {
+        !message.isEmpty
+    }
+    
+    var sendAction: () -> Void {
+        canSend ? onSend : {}
+    }
+    
     var body: some View {
         HStack(alignment: .bottom, spacing: 5) {
             chatText
@@ -31,12 +39,9 @@ struct ChatInput: View {
     }
     
     var sendButton: some View {
-        let canSend = !message.isEmpty
-        let action = canSend ? onSend : {}
-        
         let button = Image(systemName: "paperplane.fill")
             .padding(8)
-        return Button(action: action) {
+        return Button(action: sendAction) {
             if !canSend {
                 button
                     .foregroundColor(Color(.systemGray))

@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct ChatSettings: View {
-    @Binding var chatName: String
-
+    @Binding var chat: String?
     @State private var chatNameState: String
-    
-    init(chatName: Binding<String>) {
-        self._chatName = chatName
-        self.chatNameState = chatName.wrappedValue
+
+    init(chat: Binding<String?>) {
+        self._chat = chat
+        self.chatNameState = chat.wrappedValue ?? ""
     }
     
     var body: some View {
@@ -27,14 +26,13 @@ struct ChatSettings: View {
         }
         
         let doneButton = Button("Done") {
-            chatName = chatNameState
+            chat = chatNameState
             Persistence.shared.saveContext()
         }
     
         settings
         .padding()
         .background(AppColors.bg)
-        .frame(width: .infinity, height: .infinity)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 doneButton
