@@ -41,17 +41,16 @@ struct ChatList: View {
             .navigationTitle("Chats")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-//                if !chats.isEmpty {
-//                    ToolbarItem(placement: .navigationBarLeading) {
-//                        AppButtons.action(label: "Delete all") {
-//                            Persistence.shared.deleteAllEntities()
-//                        }
-//                    }
-//                }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    AppButtons.write {
-                        newChat = ChatList.persistence.newChat()
-                        newChatIsActive = true
+                    HStack {
+                        if newChat != nil {
+                            NewChatNavigationLink()
+                        }
+
+                        AppButtons.write {
+                            newChat = ChatList.persistence.newChat()
+                            newChatIsActive = true
+                        }
                     }
                 }
             }
@@ -62,10 +61,6 @@ struct ChatList: View {
         VStack {
             Text("Start a new chat by tapping the button above").subheadline()
             Spacer()
-            
-            if newChat != nil {
-                NewChatNavigationLink()
-            }
         }
         .padding(.top, 100)
     }
@@ -74,13 +69,6 @@ struct ChatList: View {
         List {
             ForEach(chats, id: \.self) { chat in
                 ChatListCell(thread: chat)
-//                    .listRowBackground(chat.pinned
-//                                       ? AppColors.chatResponseBg
-//                                       : AppColors.systemBg)
-            }
-
-            if newChat != nil {
-                NewChatNavigationLink()
             }
         }.listStyle(PlainListStyle())
     }

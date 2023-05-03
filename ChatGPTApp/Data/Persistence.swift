@@ -67,6 +67,11 @@ class Persistence {
         let emptyChat = newChat()
         return [emptyChat]
     }
+    
+    func delete(chat: EChat) {
+        context.delete(chat)
+        saveContext()
+    }
 
     func saveContext() {
         let ctx = container.viewContext

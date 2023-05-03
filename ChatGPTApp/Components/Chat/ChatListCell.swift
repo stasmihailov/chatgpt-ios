@@ -20,7 +20,7 @@ struct ChatListCell: View {
             chatAvatar
             VStack {
                 HStack {
-                    Text(thread.name!).font(.headline)
+                    Text(thread.name ?? "").font(.headline)
                     Spacer()
                     Text(lastMessage?.lastTimeString ?? "").subheadline()
                 }.padding(.bottom, 2)
@@ -40,7 +40,7 @@ struct ChatListCell: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button("Delete") {
-                Persistence.shared.context.delete(thread)
+                Persistence.shared.delete(chat: thread)
             }.tint(.red)
         }
     }

@@ -55,7 +55,7 @@ public class EChat: NSManagedObject {
     
     var messageList: [EChatMsg] {
         get {
-            return self.messages?.compactMap { $0 as? EChatMsg } as! [EChatMsg]
+            return self.messages?.compactMap { $0 as? EChatMsg } ?? []
         }
     }
     
