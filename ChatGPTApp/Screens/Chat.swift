@@ -86,6 +86,12 @@ struct ExistingChatBody: View {
 }
 
 struct ChatModelPicker: View {
+    private static let defaultSelection = "gpt-3.5-turbo"
+    private static let allSelections = [
+        defaultSelection,
+        "gpt-4",
+    ]
+    
     @Binding var model: String?
     var label = true
     var padding: CGFloat = 4.0
@@ -99,13 +105,22 @@ struct ChatModelPicker: View {
             }
 
             Picker("Model", selection: $model) {
-                Text("gpt-3.5-turbo")
-                Text("gpt-4")
+                ForEach(ChatModelPicker.allSelections, id: \.self) { m in
+                    Text(m)
+                }
             }
             .pickerStyle(.menu)
             .padding(padding)
             .background(AppColors.bg)
             .cornerRadius(10)
+        }.onAppear {
+            setupDefaultSelection()
+        }
+    }
+    
+    private func setupDefaultSelection() {
+        if model?.isEmpty ?? true {
+            self.model = ChatModelPicker.defaultSelection
         }
     }
 }
