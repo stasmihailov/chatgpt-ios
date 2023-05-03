@@ -92,13 +92,13 @@ struct ChatModelPicker: View {
         "gpt-4",
     ]
     
-    @Binding var model: String?
+    @Binding var model: String
     var label = true
     var padding: CGFloat = 4.0
     
     var body: some View {
         VStack(alignment: .leading) {
-            if label{
+            if label {
                 Text("Model")
                     .font(.caption)
                     .padding(.leading, 15)
@@ -106,7 +106,7 @@ struct ChatModelPicker: View {
 
             Picker("Model", selection: $model) {
                 ForEach(ChatModelPicker.allSelections, id: \.self) { m in
-                    Text(m)
+                    Text(m).tag(m)
                 }
             }
             .pickerStyle(.menu)
@@ -119,7 +119,7 @@ struct ChatModelPicker: View {
     }
     
     private func setupDefaultSelection() {
-        if model?.isEmpty ?? true {
+        if model.isEmpty {
             self.model = ChatModelPicker.defaultSelection
         }
     }
@@ -153,7 +153,7 @@ struct Chat: View {
         ZStack {
             if thread.messageList.isEmpty {
                 VStack {
-                    ChatModelPicker(model: $thread.model)
+                    ChatModelPicker(model: thread.modelBinding)
                         .padding(.bottom, 64)
                     Text("Enter a new message to start the chat. Select a model above (you can change it later)")
                         .foregroundColor(Color(UIColor.systemGray))

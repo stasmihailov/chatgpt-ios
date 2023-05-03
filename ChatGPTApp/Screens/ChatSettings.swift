@@ -11,12 +11,12 @@ struct ChatSettings: View {
     @ObservedObject var chat: EChat
 
     @State private var chatNameState: String
-    @State private var modelState: String?
+    @State private var modelState: String
 
     init(chat: EChat) {
         self.chat = chat
         self.chatNameState = chat.name ?? ""
-        self.modelState = chat.model
+        self.modelState = chat.modelBinding.wrappedValue
     }
     
     var body: some View {
