@@ -45,6 +45,7 @@ struct ChatMessage: View {
 struct ExistingChatBody: View {
     @ObservedObject var thread: EChat
     @ObservedObject var lastResponse: LWMsg
+    var bottomPadding: CGFloat
     
     var body: some View {
         let messages = thread
@@ -53,6 +54,9 @@ struct ExistingChatBody: View {
             .reversed()
         
         List {
+            Spacer()
+                .frame(height: bottomPadding)
+            
             if (!lastResponse.text.isEmpty) {
                 Msg(lastResponse)
             }
@@ -116,26 +120,20 @@ struct Chat: View {
     @State var showAlert = false
     @State var alertText = ""
     @State var chatSettingsIsActive = false
-    @State var inputHeight: CGFloat = 0.0
     @StateObject var lastResponse: LWMsg = LWMsg(source: .ASSISTANT)
 
     @ObservedObject var thread: EChat
 
     var body: some View {
+        let chatInput = ChatInput(message: $message) {
+            onSend()
+        }
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
             chatParamsButton
-            ChatInput(message: $message) {
-                onSend()
-            }
+            chatInput
         }
         .padding(10)
         .tinted()
-        .background(GeometryReader { geometry -> Color in
-            DispatchQueue.main.async {
-                self.inputHeight = geometry.size.height
-            }
-            return Color.clear
-        })
     
         ZStack {
             if thread.messageList.isEmpty {
@@ -150,9 +148,12 @@ struct Chat: View {
                 .padding(20)
                 
             } else {
-                ExistingChatBody(thread: thread, lastResponse: lastResponse)
-                    .frame(maxHeight: .infinity)
-                    .padding(.bottom, inputHeight)
+                ExistingChatBody(
+                    thread: thread,
+                    lastResponse: lastResponse,
+                    bottomPadding: chatInput.maxHeight - 2
+                )
+                .frame(maxHeight: .infinity)
             }
 
             VStack {

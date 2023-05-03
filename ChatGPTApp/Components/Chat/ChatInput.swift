@@ -19,6 +19,12 @@ struct ChatInput: View {
         canSend ? onSend : {}
     }
     
+    var maxHeight: CGFloat {
+        get {
+            return 40
+        }
+    }
+    
     var body: some View {
         HStack(alignment: .bottom, spacing: 5) {
             chatText
@@ -36,6 +42,7 @@ struct ChatInput: View {
                 .font(.body)
             Text(message).opacity(0).padding(.all, 8)
         }
+        .frame(maxHeight: maxHeight)
     }
     
     var sendButton: some View {
