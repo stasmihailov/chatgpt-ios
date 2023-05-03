@@ -126,7 +126,7 @@ class OpenAIApiImpl: OpenAIApi {
         do {
             let messagesJson = Coders.encode(messages: chat.messageList)
             let body: [String : Any] = [
-                "model": "gpt-3.5-turbo", // chat.model!,
+                "model": chat.model!,
                 "user": "masteryoda",
                 "stream": true,
                 "messages": messagesJson,

@@ -8,29 +8,53 @@
 import SwiftUI
 
 struct ChatSettings: View {
-    @Binding var chat: String?
-    @State private var chatNameState: String
+    @ObservedObject var chat: EChat
 
-    init(chat: Binding<String?>) {
-        self._chat = chat
-        self.chatNameState = chat.wrappedValue ?? ""
+    @State private var chatNameState: String
+    @State private var modelState: String?
+
+    init(chat: EChat) {
+        self.chat = chat
+        self.chatNameState = chat.name ?? ""
+        self.modelState = chat.model
     }
     
     var body: some View {
-        let settings = VStack {
-            Image("chatsettings-avatar")
-            AppButtons.action(label: "Set new chat icon") {
+        let avatarSettings = HStack {
+            Image("chatlist-chatgpt-logo")
+            Spacer(minLength: 30)
+            AppButtons.action(label: "Set custom chat emoji") {
             }
+        }
+        
+        let nameSettings = HStack {
+            Text("Name")
+            Spacer(minLength: 30)
             ClearableText($chatNameState, placeholder: "Enter chat name")
-            Spacer()
+        }
+        
+        let modelSettings = HStack {
+            Text("Model")
+            Spacer(minLength: 30)
+            ChatModelPicker(model: $modelState, label: false, padding: 0)
+                .padding(.trailing, -13)
         }
         
         let doneButton = Button("Done") {
-            chat = chatNameState
+            chat.name = chatNameState
+            chat.model = modelState
+
             Persistence.shared.saveContext()
         }
     
-        settings
+        VStack {
+            Group{
+                avatarSettings
+                nameSettings
+                modelSettings
+            }
+            Spacer()
+        }
         .padding()
         .background(AppColors.bg)
         .toolbar {
@@ -40,15 +64,17 @@ struct ChatSettings: View {
         }
     }
 }
-//
-//struct ChatSettings_Previews: PreviewProvider {
-//    struct ChatSettingsWrapper: View {
-//        var body: some View {
-//            ChatSettings(chat: ...)
-//        }
-//    }
-//
-//    static var previews: some View {
-//        ChatSettingsWrapper()
-//    }
-//}
+
+struct ChatSettings_Previews: PreviewProvider {
+    struct ChatSettingsWrapper: View {
+        @StateObject var chat: EChat = Persistence.shared.fetchChats()[0]
+
+        var body: some View {
+            ChatSettings(chat: chat)
+        }
+    }
+
+    static var previews: some View {
+        ChatSettingsWrapper()
+    }
+}

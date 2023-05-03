@@ -83,19 +83,23 @@ struct ExistingChatBody: View {
 
 struct ChatModelPicker: View {
     @Binding var model: String?
+    var label = true
+    var padding: CGFloat = 4.0
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Model")
-                .font(.caption)
-                .padding(.leading, 15)
-            
+            if label{
+                Text("Model")
+                    .font(.caption)
+                    .padding(.leading, 15)
+            }
+
             Picker("Model", selection: $model) {
                 Text("gpt-3.5-turbo")
                 Text("gpt-4")
             }
             .pickerStyle(.menu)
-            .padding(4)
+            .padding(padding)
             .background(AppColors.bg)
             .cornerRadius(10)
         }
@@ -173,7 +177,7 @@ struct Chat: View {
         .padding(.trailing, 12)
         .padding(.bottom, 12)
         .background(NavigationLink(
-            destination: ChatSettings(chat: $thread.name),
+            destination: ChatSettings(chat: thread),
             isActive: $chatSettingsIsActive) {
                 EmptyView()
             }
