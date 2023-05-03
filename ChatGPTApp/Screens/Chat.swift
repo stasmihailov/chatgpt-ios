@@ -116,6 +116,7 @@ struct Chat: View {
     @State var showAlert = false
     @State var alertText = ""
     @State var chatSettingsIsActive = false
+    @State var inputHeight: CGFloat = 0.0
     @StateObject var lastResponse: LWMsg = LWMsg(source: .ASSISTANT)
 
     @ObservedObject var thread: EChat
@@ -129,7 +130,13 @@ struct Chat: View {
         }
         .padding(10)
         .tinted()
-
+        .background(GeometryReader { geometry -> Color in
+            DispatchQueue.main.async {
+                self.inputHeight = geometry.size.height
+            }
+            return Color.clear
+        })
+    
         ZStack {
             if thread.messageList.isEmpty {
                 VStack {
@@ -145,6 +152,7 @@ struct Chat: View {
             } else {
                 ExistingChatBody(thread: thread, lastResponse: lastResponse)
                     .frame(maxHeight: .infinity)
+                    .padding(.bottom, inputHeight)
             }
 
             VStack {
