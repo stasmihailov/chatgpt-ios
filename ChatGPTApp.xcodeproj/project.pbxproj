@@ -21,6 +21,7 @@
 		8F0E825029EF029B00047583 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E824F29EF029B00047583 /* AppColors.swift */; };
 		8F0E825229EF51DE00047583 /* Landing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E825129EF51DE00047583 /* Landing.swift */; };
 		8F0E825429EF6B1700047583 /* ChatSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E825329EF6B1700047583 /* ChatSettings.swift */; };
+		8F1B584B2A02C85600C95F43 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B584A2A02C85600C95F43 /* Common.swift */; };
 		8F48781629F3379200054FBE /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F48781529F3379200054FBE /* KeychainManager.swift */; };
 		8F533D3029EFFF4600D7B389 /* MultilineText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D2F29EFFF4600D7B389 /* MultilineText.swift */; };
 		8F533D3229F04C5B00D7B389 /* AppButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D3129F04C5B00D7B389 /* AppButtons.swift */; };
@@ -76,6 +77,7 @@
 		8F0E824F29EF029B00047583 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		8F0E825129EF51DE00047583 /* Landing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Landing.swift; sourceTree = "<group>"; };
 		8F0E825329EF6B1700047583 /* ChatSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSettings.swift; sourceTree = "<group>"; };
+		8F1B584A2A02C85600C95F43 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		8F48781529F3379200054FBE /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		8F533D2F29EFFF4600D7B389 /* MultilineText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineText.swift; sourceTree = "<group>"; };
 		8F533D3129F04C5B00D7B389 /* AppButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppButtons.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				8F533D2F29EFFF4600D7B389 /* MultilineText.swift */,
 				8F0E824F29EF029B00047583 /* AppColors.swift */,
 				8F533D3129F04C5B00D7B389 /* AppButtons.swift */,
+				8F1B584A2A02C85600C95F43 /* Common.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -373,6 +376,7 @@
 				8FF2392429F1B66000CE47D7 /* Models.swift in Sources */,
 				8FF238D629F1622900CE47D7 /* Api.swift in Sources */,
 				8F0E821629ED9D8200047583 /* AppBody.swift in Sources */,
+				8F1B584B2A02C85600C95F43 /* Common.swift in Sources */,
 				8F0E824E29EEE24D00047583 /* Chat.swift in Sources */,
 				8F0E823F29EDABEE00047583 /* ClearableText.swift in Sources */,
 				8FF2391429F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld in Sources */,

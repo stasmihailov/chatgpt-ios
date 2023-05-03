@@ -48,7 +48,7 @@ struct ExistingChatBody: View {
     
     var body: some View {
         let messages = thread
-            .messages!.compactMap { $0 as? EChatMsg }
+            .messageList
             .sorted(by: { $0.time! < $1.time! })
             .reversed()
         
@@ -128,9 +128,9 @@ struct Chat: View {
             }
         }
         .padding(10)
-        .background(AppColors.bg)
+        .tinted()
 
-        VStack(spacing: 0) {
+        ZStack {
             if thread.messageList.isEmpty {
                 VStack {
                     ChatModelPicker(model: $thread.model)
@@ -138,15 +138,19 @@ struct Chat: View {
                     Text("Enter a new message to start the chat. Select a model above (you can change it later)")
                         .foregroundColor(Color(UIColor.systemGray))
                         .multilineTextAlignment(.center)
+                    Spacer()
                 }
                 .padding(20)
-                Spacer()
+                
             } else {
                 ExistingChatBody(thread: thread, lastResponse: lastResponse)
                     .frame(maxHeight: .infinity)
             }
 
-            messageInput
+            VStack {
+                Spacer()
+                messageInput
+            }
         }
         .navigationBarBackButtonHidden(true)
         .navigationBarItems(leading: Button(action: {
@@ -245,7 +249,7 @@ struct Chat_Previews: PreviewProvider {
     
     static var previews: some View {
         let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
-        let thread = Persistence.shared.newChat()
+        let thread = Persistence.shared.fetchChats()[0]
 
         Chat(thread: thread)
             .environmentObject(keychain)
