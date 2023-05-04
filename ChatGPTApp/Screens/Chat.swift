@@ -104,7 +104,9 @@ struct Chat: View {
             onSend()
         }
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
-            chatParamsButton
+            if !thread.messageList.isEmpty {
+                chatParamsButton
+            }
             chatInput
         }
         .padding(10)
@@ -126,7 +128,7 @@ struct Chat: View {
                 ExistingChatBody(
                     thread: thread,
                     lastResponse: lastResponse,
-                    bottomPadding: chatInput.maxHeight - 2
+                    bottomPadding: chatInput.minHeight - 2
                 )
                 .frame(maxHeight: .infinity)
             }

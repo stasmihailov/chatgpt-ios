@@ -19,7 +19,7 @@ struct ChatInput: View {
         canSend ? onSend : {}
     }
     
-    var maxHeight: CGFloat {
+    var minHeight: CGFloat {
         get {
             return 40
         }
@@ -42,7 +42,7 @@ struct ChatInput: View {
                 .font(.body)
             Text(message).opacity(0).padding(.all, 8)
         }
-        .frame(maxHeight: maxHeight)
+        .frame(minHeight: minHeight)
     }
     
     var sendButton: some View {
