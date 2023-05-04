@@ -22,14 +22,12 @@
 		8F0E825229EF51DE00047583 /* Landing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E825129EF51DE00047583 /* Landing.swift */; };
 		8F0E825429EF6B1700047583 /* ChatSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E825329EF6B1700047583 /* ChatSettings.swift */; };
 		8F1B584B2A02C85600C95F43 /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B584A2A02C85600C95F43 /* Common.swift */; };
+		8F1B584F2A03056400C95F43 /* ChatModelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B584E2A03056400C95F43 /* ChatModelPicker.swift */; };
 		8F48781629F3379200054FBE /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F48781529F3379200054FBE /* KeychainManager.swift */; };
 		8F533D3029EFFF4600D7B389 /* MultilineText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D2F29EFFF4600D7B389 /* MultilineText.swift */; };
 		8F533D3229F04C5B00D7B389 /* AppButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D3129F04C5B00D7B389 /* AppButtons.swift */; };
 		8F81075C29F816EC001AC2CE /* KeychainManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81075B29F816EC001AC2CE /* KeychainManagerTests.swift */; };
 		8F81075F29F81742001AC2CE /* ApiTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81075E29F81742001AC2CE /* ApiTests.swift */; };
-		8F81076A29F87950001AC2CE /* DebugSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81076929F87950001AC2CE /* DebugSettings.swift */; };
-		8F81076B29F87950001AC2CE /* DebugSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81076929F87950001AC2CE /* DebugSettings.swift */; };
-		8F81076C29F87950001AC2CE /* DebugSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F81076929F87950001AC2CE /* DebugSettings.swift */; };
 		8F931A8129FDABEF006975FF /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F931A8029FDABEF006975FF /* PersistenceTests.swift */; };
 		8F96531B29FADDA60051F2FF /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96531A29FADDA60051F2FF /* LandingUITests.swift */; };
 		8F96531C29FADDA60051F2FF /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96531A29FADDA60051F2FF /* LandingUITests.swift */; };
@@ -78,12 +76,12 @@
 		8F0E825129EF51DE00047583 /* Landing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Landing.swift; sourceTree = "<group>"; };
 		8F0E825329EF6B1700047583 /* ChatSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSettings.swift; sourceTree = "<group>"; };
 		8F1B584A2A02C85600C95F43 /* Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		8F1B584E2A03056400C95F43 /* ChatModelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModelPicker.swift; sourceTree = "<group>"; };
 		8F48781529F3379200054FBE /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		8F533D2F29EFFF4600D7B389 /* MultilineText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineText.swift; sourceTree = "<group>"; };
 		8F533D3129F04C5B00D7B389 /* AppButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppButtons.swift; sourceTree = "<group>"; };
 		8F81075B29F816EC001AC2CE /* KeychainManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManagerTests.swift; sourceTree = "<group>"; };
 		8F81075E29F81742001AC2CE /* ApiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiTests.swift; sourceTree = "<group>"; };
-		8F81076929F87950001AC2CE /* DebugSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettings.swift; sourceTree = "<group>"; };
 		8F931A8029FDABEF006975FF /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		8F96531A29FADDA60051F2FF /* LandingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingUITests.swift; sourceTree = "<group>"; };
 		8FF238D529F1622900CE47D7 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
@@ -152,7 +150,6 @@
 				8FF2391229F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld */,
 				8F0E821729ED9D8300047583 /* Assets.xcassets */,
 				8F0E821929ED9D8300047583 /* Preview Content */,
-				8F81076929F87950001AC2CE /* DebugSettings.swift */,
 			);
 			path = ChatGPTApp;
 			sourceTree = "<group>";
@@ -225,6 +222,7 @@
 			children = (
 				8FFC5D6F29FEF937001CED98 /* ChatListCell.swift */,
 				8FFC5D7229FEFC0B001CED98 /* ChatInput.swift */,
+				8F1B584E2A03056400C95F43 /* ChatModelPicker.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -363,7 +361,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8F81076A29F87950001AC2CE /* DebugSettings.swift in Sources */,
 				8F96531B29FADDA60051F2FF /* LandingUITests.swift in Sources */,
 				8F533D3029EFFF4600D7B389 /* MultilineText.swift in Sources */,
 				8FF2391629F1B13200CE47D7 /* Persistence.swift in Sources */,
@@ -382,6 +379,7 @@
 				8FF2391429F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld in Sources */,
 				8F0E824329EEE07C00047583 /* AppSettings.swift in Sources */,
 				8F0E825029EF029B00047583 /* AppColors.swift in Sources */,
+				8F1B584F2A03056400C95F43 /* ChatModelPicker.swift in Sources */,
 				8FFC5D7329FEFC0B001CED98 /* ChatInput.swift in Sources */,
 				8F0E821429ED9D8200047583 /* ChatGPTApp.swift in Sources */,
 			);
@@ -395,7 +393,6 @@
 				8F96531C29FADDA60051F2FF /* LandingUITests.swift in Sources */,
 				8F81075F29F81742001AC2CE /* ApiTests.swift in Sources */,
 				8F931A8129FDABEF006975FF /* PersistenceTests.swift in Sources */,
-				8F81076B29F87950001AC2CE /* DebugSettings.swift in Sources */,
 				8F0E822529ED9D8300047583 /* ChatGPTAppTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -406,7 +403,6 @@
 			files = (
 				8F0E823129ED9D8300047583 /* ChatGPTAppUITestsLaunchTests.swift in Sources */,
 				8F96531D29FADDA60051F2FF /* LandingUITests.swift in Sources */,
-				8F81076C29F87950001AC2CE /* DebugSettings.swift in Sources */,
 				8F0E822F29ED9D8300047583 /* ChatGPTAppUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

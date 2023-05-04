@@ -30,8 +30,8 @@
             filePath = "ChatGPTApp/Screens/Chat.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
             landmarkName = "body"
             landmarkType = "24">
             <Locations>
@@ -78,8 +78,8 @@
             filePath = "ChatGPTApp/Screens/Chat.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
+            startingLineNumber = "133"
+            endingLineNumber = "133"
             landmarkName = "body"
             landmarkType = "24">
             <Locations>
@@ -112,54 +112,6 @@
                   startingLineNumber = "169"
                   endingLineNumber = "169"
                   offsetFromSymbolStart = "192">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "24DB8BB6-8218-4C95-98CF-68DE4E30FACE"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChatGPTApp/Screens/ChatList.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "70"
-            endingLineNumber = "70"
-            landmarkName = "ExistingChatList()"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "24DB8BB6-8218-4C95-98CF-68DE4E30FACE - 4c76dfcbc49d2a46"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; SwiftUI.ForEach&lt;Swift.Array&lt;ChatGPTApp.EChat&gt;, ChatGPTApp.EChat, ChatGPTApp.ChatListCell&gt; in ChatGPTApp.ChatList.ExistingChatList() -&gt; some"
-                  moduleName = "ChatGPTApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/denisbabochenko/repos/ChatGPTApp/ChatGPTApp/Screens/ChatList.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "70"
-                  endingLineNumber = "70"
-                  offsetFromSymbolStart = "240">
-               </Location>
-               <Location
-                  uuid = "24DB8BB6-8218-4C95-98CF-68DE4E30FACE - 8eb48a8f0020b6b6"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (ChatGPTApp.EChat) -&gt; ChatGPTApp.ChatListCell in closure #1 () -&gt; SwiftUI.ForEach&lt;Swift.Array&lt;ChatGPTApp.EChat&gt;, ChatGPTApp.EChat, ChatGPTApp.ChatListCell&gt; in ChatGPTApp.ChatList.ExistingChatList() -&gt; some"
-                  moduleName = "ChatGPTApp"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/denisbabochenko/repos/ChatGPTApp/ChatGPTApp/Screens/ChatList.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "71"
-                  endingLineNumber = "71"
-                  offsetFromSymbolStart = "48">
                </Location>
             </Locations>
          </BreakpointContent>

@@ -31,13 +31,7 @@ struct ChatList: View {
 
     var body: some View {
         NavigationView {
-            Group {
-                if chats.isEmpty {
-                    ChatListPlaceholder()
-                } else {
-                    ExistingChatList()
-                }
-            }
+            ExistingChatList()
             .navigationTitle("Chats")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -57,20 +51,19 @@ struct ChatList: View {
         }
     }
     
-    private func ChatListPlaceholder() -> some View {
-        VStack {
-            Text("Start a new chat by tapping the button above").subheadline()
-            Spacer()
-        }
-        .padding(.top, 100)
-    }
-    
     private func ExistingChatList() -> some View {
-        List {
-            ForEach(chats, id: \.self) { chat in
-                ChatListCell(thread: chat)
+        VStack {
+            if chats.isEmpty {
+                Text("Start a new chat by tapping the button above").subheadline()
+                .padding(.top, 100)
             }
-        }.listStyle(PlainListStyle())
+            
+            List {
+                ForEach(chats, id: \.self) { chat in
+                    ChatListCell(thread: chat)
+                }
+            }.listStyle(PlainListStyle())
+        }
     }
 
     private func NewChatNavigationLink() -> some View {
