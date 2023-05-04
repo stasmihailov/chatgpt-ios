@@ -167,9 +167,6 @@ struct Chat: View {
         AppButtons.chatSettings {
             self.chatSettingsIsActive = true
         }
-        .padding(.leading, 8)
-        .padding(.trailing, 12)
-        .padding(.bottom, 12)
         .background(NavigationLink(
             destination: ChatSettings(chat: thread),
             isActive: $chatSettingsIsActive) {

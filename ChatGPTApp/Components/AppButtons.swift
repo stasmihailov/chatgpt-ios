@@ -24,6 +24,9 @@ final class AppButtons {
         Button(action: action) {
             Image(systemName: "slider.horizontal.3")
                 .foregroundColor(AppColors.accent)
+                .padding(.leading, 8)
+                .padding(.trailing, 12)
+                .padding(.bottom, 12)
         }
     }
     
