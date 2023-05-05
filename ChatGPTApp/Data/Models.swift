@@ -12,6 +12,12 @@ import SwiftUI
 
 class LWMsg: ObservableObject {
     @Published var text: String
+    
+    var formattedText: LocalizedStringKey {
+        get {
+            LocalizedStringKey(text)
+        }
+    }
 
     var time: Date
     var source: EChatMsgSource

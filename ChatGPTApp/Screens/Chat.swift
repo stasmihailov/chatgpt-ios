@@ -29,7 +29,7 @@ struct ChatMessage: View {
                 chatAvatar
                     .padding(.top, 4)
                     .padding(.trailing, 8)
-                Text(message.text)
+                Text(message.formattedText)
                     .textSelection(.enabled)
                 Spacer()
             }
