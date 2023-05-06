@@ -67,6 +67,7 @@ struct AppBody: View {
             .environmentObject(keychain)
             .environmentObject(api)
             .environment(\.managedObjectContext, Persistence.shared.container.viewContext)
+            .environmentObject(NetworkStatus())
     }
 }
 

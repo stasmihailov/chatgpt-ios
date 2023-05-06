@@ -43,6 +43,8 @@ struct ChatMessage: View {
 }
 
 struct ExistingChatBody: View {
+    @EnvironmentObject var network: NetworkStatus
+    
     @ObservedObject var thread: EChat
     @ObservedObject var lastResponse: LWMsg
     var bottomPadding: CGFloat
@@ -69,6 +71,10 @@ struct ExistingChatBody: View {
         .flip()
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
+                if !network.isConnected {
+                    OfflineModeLabel()
+                }
+
                 AppButtons.search()
             }
         }
@@ -251,5 +257,6 @@ struct Chat_Previews: PreviewProvider {
         Chat(thread: thread)
             .environmentObject(keychain)
             .environmentObject(api)
+            .environmentObject(NetworkStatus())
     }
 }

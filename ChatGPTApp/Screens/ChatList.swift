@@ -10,6 +10,7 @@ import SwiftUI
 struct ChatList: View {
     @EnvironmentObject var keychain: KeychainManagerWrapper
     @EnvironmentObject var api: OpenAIApiWrapper
+    @EnvironmentObject var network: NetworkStatus
     static var persistence = Persistence.shared
 
     @FetchRequest(
@@ -39,6 +40,10 @@ struct ChatList: View {
                     HStack {
                         if newChat != nil {
                             NewChatNavigationLink()
+                        }
+                        
+                        if !network.isConnected {
+                            OfflineModeLabel()
                         }
 
                         AppButtons.write {
@@ -84,5 +89,6 @@ struct ChatList_Previews: PreviewProvider {
         ChatList()
             .environmentObject(keychain)
             .environmentObject(api)
+            .environmentObject(NetworkStatus())
     }
 }
