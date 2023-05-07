@@ -214,6 +214,7 @@ struct Chat: View {
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
+                    persistence.saveContext()
                     break
                 case .failure(let err):
                     self.alertText = err.error

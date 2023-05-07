@@ -84,26 +84,6 @@ public class EChat: NSManagedObject {
         return msg
     }
 
-    func addResponse(response: LWMsg) -> EChatMsg {
-        let ctx = Persistence.shared.context
-        
-        let msg = EChatMsg(context: ctx)
-        msg.source = response.source
-        msg.text = response.text
-        msg.time = response.time
-        msg.chat = self
-        
-        nextMessage = msg
-        
-        do {
-            try ctx.save()
-        } catch {
-            // on error
-        }
-
-        return msg
-    }
-    
     static func ==(lhs: EChat, rhs: EChat) -> Bool {
         return lhs.id == rhs.id
     }
