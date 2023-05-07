@@ -164,8 +164,7 @@ struct ChatMessage: View {
                 chatAvatar
                     .padding(.top, 4)
                     .padding(.trailing, 8)
-                Text(message.formattedText)
-                    .textSelection(.enabled)
+                SelectableText(message.text)
                 Spacer()
             }
             HStack {
@@ -173,6 +172,8 @@ struct ChatMessage: View {
                 Text(message.time.userString).subheadline()
             }
         }
+        .padding(.top, 4)
+        .padding(.bottom, 4)
         .flip()
     }
 }

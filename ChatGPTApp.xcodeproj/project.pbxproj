@@ -25,6 +25,8 @@
 		8F1B584F2A03056400C95F43 /* ChatModelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B584E2A03056400C95F43 /* ChatModelPicker.swift */; };
 		8F1B58512A06C9C300C95F43 /* Labels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B58502A06C9C300C95F43 /* Labels.swift */; };
 		8F1B58532A06CA8E00C95F43 /* System.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1B58522A06CA8E00C95F43 /* System.swift */; };
+		8F2F4DE52A08496F0073609C /* SelectableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2F4DE42A08496F0073609C /* SelectableText.swift */; };
+		8F2F4DE82A084AA40073609C /* Down in Frameworks */ = {isa = PBXBuildFile; productRef = 8F2F4DE72A084AA40073609C /* Down */; };
 		8F48781629F3379200054FBE /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F48781529F3379200054FBE /* KeychainManager.swift */; };
 		8F533D3029EFFF4600D7B389 /* MultilineText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D2F29EFFF4600D7B389 /* MultilineText.swift */; };
 		8F533D3229F04C5B00D7B389 /* AppButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F533D3129F04C5B00D7B389 /* AppButtons.swift */; };
@@ -81,6 +83,7 @@
 		8F1B584E2A03056400C95F43 /* ChatModelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModelPicker.swift; sourceTree = "<group>"; };
 		8F1B58502A06C9C300C95F43 /* Labels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Labels.swift; sourceTree = "<group>"; };
 		8F1B58522A06CA8E00C95F43 /* System.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = System.swift; sourceTree = "<group>"; };
+		8F2F4DE42A08496F0073609C /* SelectableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableText.swift; sourceTree = "<group>"; };
 		8F48781529F3379200054FBE /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		8F533D2F29EFFF4600D7B389 /* MultilineText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineText.swift; sourceTree = "<group>"; };
 		8F533D3129F04C5B00D7B389 /* AppButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppButtons.swift; sourceTree = "<group>"; };
@@ -101,6 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F2F4DE82A084AA40073609C /* Down in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,9 +191,8 @@
 		8F0E823D29EDABD200047583 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				8F2F4DE32A0849620073609C /* Text */,
 				8FFC5D7129FEFBFE001CED98 /* Chat */,
-				8F0E823E29EDABEE00047583 /* ClearableText.swift */,
-				8F533D2F29EFFF4600D7B389 /* MultilineText.swift */,
 				8F0E824F29EF029B00047583 /* AppColors.swift */,
 				8F533D3129F04C5B00D7B389 /* AppButtons.swift */,
 				8F1B584A2A02C85600C95F43 /* Common.swift */,
@@ -209,6 +212,16 @@
 				8F0E824229EEE07C00047583 /* AppSettings.swift */,
 			);
 			path = Screens;
+			sourceTree = "<group>";
+		};
+		8F2F4DE32A0849620073609C /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				8F0E823E29EDABEE00047583 /* ClearableText.swift */,
+				8F533D2F29EFFF4600D7B389 /* MultilineText.swift */,
+				8F2F4DE42A08496F0073609C /* SelectableText.swift */,
+			);
+			path = Text;
 			sourceTree = "<group>";
 		};
 		8FF2392829F1B66600CE47D7 /* Data */ = {
@@ -250,6 +263,7 @@
 			);
 			name = ChatGPTApp;
 			packageProductDependencies = (
+				8F2F4DE72A084AA40073609C /* Down */,
 			);
 			productName = ChatGPTApp;
 			productReference = 8F0E821029ED9D8200047583 /* ChatGPTApp.app */;
@@ -324,6 +338,7 @@
 			);
 			mainGroup = 8F0E820729ED9D8200047583;
 			packageReferences = (
+				8F2F4DE62A084AA40073609C /* XCRemoteSwiftPackageReference "Down" */,
 			);
 			productRefGroup = 8F0E821129ED9D8200047583 /* Products */;
 			projectDirPath = "";
@@ -383,6 +398,7 @@
 				8F1B584B2A02C85600C95F43 /* Common.swift in Sources */,
 				8F0E824E29EEE24D00047583 /* Chat.swift in Sources */,
 				8F0E823F29EDABEE00047583 /* ClearableText.swift in Sources */,
+				8F2F4DE52A08496F0073609C /* SelectableText.swift in Sources */,
 				8FF2391429F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld in Sources */,
 				8F0E824329EEE07C00047583 /* AppSettings.swift in Sources */,
 				8F1B58532A06CA8E00C95F43 /* System.swift in Sources */,
@@ -723,6 +739,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8F2F4DE62A084AA40073609C /* XCRemoteSwiftPackageReference "Down" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/iwasrobbed/Down.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8F2F4DE72A084AA40073609C /* Down */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F2F4DE62A084AA40073609C /* XCRemoteSwiftPackageReference "Down" */;
+			productName = Down;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		8FF2391229F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld */ = {
