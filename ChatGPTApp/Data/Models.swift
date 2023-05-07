@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import Combine
 import SwiftUI
 
 class LWMsg: ObservableObject {
@@ -151,5 +152,10 @@ public class EChatMsg: NSManagedObject {
         get {
             return time?.userString ?? ""
         }
+    }
+
+    override public func willChangeValue(forKey key: String) {
+        super.willChangeValue(forKey: key)
+        objectWillChange.send()
     }
 }

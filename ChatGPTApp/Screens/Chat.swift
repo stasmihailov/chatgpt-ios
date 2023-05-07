@@ -46,7 +46,6 @@ struct ExistingChatBody: View {
     @EnvironmentObject var network: NetworkStatus
     
     @ObservedObject var thread: EChat
-    @ObservedObject var lastResponse: LWMsg
     var bottomPadding: CGFloat
     
     var body: some View {
@@ -58,10 +57,6 @@ struct ExistingChatBody: View {
         List {
             Spacer()
                 .frame(height: bottomPadding)
-            
-            if (!lastResponse.text.isEmpty) {
-                Msg(lastResponse)
-            }
 
             ForEach(messages, id: \.self) { message in
                 Msg(.from(message))
@@ -111,7 +106,6 @@ struct Chat: View {
     @State var showAlert = false
     @State var alertText = ""
     @State var chatSettingsIsActive = false
-    @StateObject var lastResponse: LWMsg = LWMsg(source: .ASSISTANT)
 
     @ObservedObject var thread: EChat
 
@@ -143,7 +137,6 @@ struct Chat: View {
             } else {
                 ExistingChatBody(
                     thread: thread,
-                    lastResponse: lastResponse,
                     bottomPadding: chatInput.minHeight - 2
                 )
                 .frame(maxHeight: .infinity)
@@ -192,10 +185,6 @@ struct Chat: View {
     }
     
     func onSend() {
-        if (!lastResponse.text.isEmpty) {
-            flushLastMessage()
-        }
-        
         sendMessage()
     }
     
@@ -206,12 +195,6 @@ struct Chat: View {
 
     private func discardChat() {
         persistence.context.delete(thread)
-    }
-    
-    private func flushLastMessage() {
-        thread.addResponse(response: lastResponse)
-        lastResponse.reset(source: .ASSISTANT)
-        api.cancelCurrent()
     }
 
     private func sendMessage() {
@@ -224,13 +207,13 @@ struct Chat: View {
         thread.newMessage(source: .USER, text: msg)
         message = ""
         
-        lastResponse.reset(source: .ASSISTANT)
+        var lastResponse = thread.newMessage(source: .ASSISTANT, text: "")
+
         api.chatCompletion(for: thread, token: token)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    self.flushLastMessage()
                     break
                 case .failure(let err):
                     self.alertText = err.error
@@ -238,7 +221,9 @@ struct Chat: View {
                     break
                 }
             }, receiveValue: { value in
-                self.lastResponse.text.append(value)
+                lastResponse.text!.append(value)
+                lastResponse.objectWillChange.send()
+                thread.objectWillChange.send()
             }).store(in: &api.cancellables)
     }
 }
