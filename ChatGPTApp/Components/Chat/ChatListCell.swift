@@ -51,7 +51,9 @@ struct ChatListCell: View {
     }
     
     var lastMessagePreview: some View {
-        let lastMessage = thread.messageList.last
+        let lastMessage = thread.messageList
+            .filter { $0.source == .USER }
+            .last
         
         return Text(lastMessage?.text ?? "")
             .subheadline()
