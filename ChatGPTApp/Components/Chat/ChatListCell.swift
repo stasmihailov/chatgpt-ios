@@ -11,7 +11,6 @@ struct ChatListCell: View {
     @ObservedObject var thread: EChat
 
     var body: some View {
-        let lastMessage = thread.messageList.last
         let navLink = NavigationLink("") {
             Chat(thread: thread)
         }.opacity(0)
@@ -22,7 +21,7 @@ struct ChatListCell: View {
                 HStack {
                     Text(thread.name ?? "").font(.headline)
                     Spacer()
-                    Text(lastMessage?.lastTimeString ?? "").subheadline()
+                    Text(thread.lastMessageTime.userString).subheadline()
                 }.padding(.bottom, 2)
                 HStack {
                     lastMessagePreview

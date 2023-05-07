@@ -62,7 +62,10 @@ public class EChat: NSManagedObject {
     
     var messageList: [EChatMsg] {
         get {
-            return self.messages?.compactMap { $0 as? EChatMsg } ?? []
+            return self.messages?
+                .compactMap { $0 as? EChatMsg }
+                .sorted(by: { $0.time! < $1.time! })
+            ?? []
         }
     }
     
@@ -125,12 +128,6 @@ public class EChatMsg: NSManagedObject {
             return EChatMsgSource(rawValue: self.sourceRaw!)!
         } set {
             self.sourceRaw = newValue.rawValue
-        }
-    }
-    
-    var lastTimeString: String {
-        get {
-            return time?.userString ?? ""
         }
     }
 

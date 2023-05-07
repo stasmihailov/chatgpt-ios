@@ -16,86 +16,6 @@ extension View {
     }
 }
 
-struct ChatMessage: View {
-    @ObservedObject var message: LWMsg
-
-    var body: some View {
-        let chatAvatar = Image(message.source == .ASSISTANT
-                               ? "chat-avatar-assistant"
-                               : "chat-avatar-user")
-
-        VStack {
-            HStack(alignment: .top) {
-                chatAvatar
-                    .padding(.top, 4)
-                    .padding(.trailing, 8)
-                Text(message.formattedText)
-                    .textSelection(.enabled)
-                Spacer()
-            }
-            HStack {
-                Spacer()
-                Text(message.time.userString).subheadline()
-            }
-        }
-        .flip()
-    }
-}
-
-struct ExistingChatBody: View {
-    @EnvironmentObject var network: NetworkStatus
-    
-    @ObservedObject var thread: EChat
-    var bottomPadding: CGFloat
-    
-    var body: some View {
-        let messages = thread
-            .messageList
-            .sorted(by: { $0.time! < $1.time! })
-            .reversed()
-        
-        List {
-            Spacer()
-                .frame(height: bottomPadding)
-
-            ForEach(messages, id: \.self) { message in
-                Msg(.from(message))
-            }
-        }
-        .listStyle(PlainListStyle())
-        .flip()
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                if !network.isConnected {
-                    OfflineModeLabel()
-                }
-
-                AppButtons.search()
-            }
-        }
-    }
-    
-    func Msg(_ msg: LWMsg) -> some View {
-        ChatMessage(message: msg)
-        .navigationTitle(thread.name!)
-        .navigationBarTitleDisplayMode(.inline)
-        .listRowBackground(msg.source == .USER
-                           ? AppColors.systemBg
-                           : AppColors.bg)
-        .listRowSeparator(.hidden)
-    }
-}
-
-extension UINavigationController: UIGestureRecognizerDelegate {
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        interactivePopGestureRecognizer?.delegate = self
-    }
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return viewControllers.count > 1
-    }
-}
-
 struct Chat: View {
     @EnvironmentObject var keychain: KeychainManagerWrapper
     @EnvironmentObject var api: OpenAIApiWrapper
@@ -228,6 +148,83 @@ struct Chat: View {
                 
                 persistence.saveContext()
             }).store(in: &api.cancellables)
+    }
+}
+
+struct ChatMessage: View {
+    @ObservedObject var message: LWMsg
+
+    var body: some View {
+        let chatAvatar = Image(message.source == .ASSISTANT
+                               ? "chat-avatar-assistant"
+                               : "chat-avatar-user")
+
+        VStack {
+            HStack(alignment: .top) {
+                chatAvatar
+                    .padding(.top, 4)
+                    .padding(.trailing, 8)
+                Text(message.formattedText)
+                    .textSelection(.enabled)
+                Spacer()
+            }
+            HStack {
+                Spacer()
+                Text(message.time.userString).subheadline()
+            }
+        }
+        .flip()
+    }
+}
+
+struct ExistingChatBody: View {
+    @EnvironmentObject var network: NetworkStatus
+    
+    @ObservedObject var thread: EChat
+    var bottomPadding: CGFloat
+    
+    var body: some View {
+        let messages = thread.messageList.reversed()
+        
+        List {
+            Spacer()
+                .frame(height: bottomPadding)
+
+            ForEach(messages, id: \.self) { message in
+                Msg(.from(message))
+            }
+        }
+        .listStyle(PlainListStyle())
+        .flip()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                if !network.isConnected {
+                    OfflineModeLabel()
+                }
+
+                AppButtons.search()
+            }
+        }
+    }
+    
+    func Msg(_ msg: LWMsg) -> some View {
+        ChatMessage(message: msg)
+        .navigationTitle(thread.name!)
+        .navigationBarTitleDisplayMode(.inline)
+        .listRowBackground(msg.source == .USER
+                           ? AppColors.systemBg
+                           : AppColors.bg)
+        .listRowSeparator(.hidden)
+    }
+}
+
+extension UINavigationController: UIGestureRecognizerDelegate {
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        interactivePopGestureRecognizer?.delegate = self
+    }
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return viewControllers.count > 1
     }
 }
 
