@@ -225,6 +225,8 @@ struct Chat: View {
                 lastResponse.text!.append(value)
                 lastResponse.objectWillChange.send()
                 thread.objectWillChange.send()
+                
+                persistence.saveContext()
             }).store(in: &api.cancellables)
     }
 }
