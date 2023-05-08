@@ -158,6 +158,7 @@ struct ChatMessage: View {
         let chatAvatar = Image(message.source == .ASSISTANT
                                ? "chat-avatar-assistant"
                                : "chat-avatar-user")
+        
 
         VStack {
             HStack(alignment: .top) {

@@ -6,81 +6,48 @@
 //
 import SwiftUI
 import UIKit
-import Down
+import MarkdownUI
 
-struct SelectableText: UIViewRepresentable {
-    @Environment(\.colorScheme) private var colorScheme
+struct SelectableText: View {
     var text: String
     
     init(_ text: String) {
         self.text = text
     }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    func makeUIView(context: Context) -> UITextView {
-        let myTextView = UITextView()
-        myTextView.delegate = context.coordinator
-        myTextView.isEditable = false
-        myTextView.isUserInteractionEnabled = true
-        myTextView.isSelectable = true
-        myTextView.font = UIFont.systemFont(ofSize: UIFont.labelFontSize)
-        myTextView.isScrollEnabled = false
-        myTextView.textContainer.lineFragmentPadding = 0
-        myTextView.textContainerInset = .zero
-        myTextView.backgroundColor = .clear
-        myTextView.textContainer.maximumNumberOfLines = 0
-        myTextView.textContainer.lineBreakMode = .byWordWrapping
-        myTextView.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        return myTextView
-    }
-
-    func updateUIView(_ uiView: UITextView, context: Context) {
-        if let markdown = try? Down(markdownString: text).toAttributedString() {
-            let msgText = NSMutableAttributedString(attributedString: markdown)
-            msgText.attr(.foregroundColor, value: uiView.textColor!)
-            msgText.attr(.backgroundColor, value: UIColor.clear)
-            msgText.attr(.font, value: uiView.font!)
-            
-            uiView.attributedText = msgText
-        }
-    }
-
-    class Coordinator: NSObject, UITextViewDelegate {
-        var parent: SelectableText
-
-        init(_ parent: SelectableText) {
-            self.parent = parent
-        }
-    }
-}
-
-extension NSMutableAttributedString {
-    func attr(_ key: NSAttributedString.Key, value: Any) {
-        self.addAttribute(key, value: value,
-                          range: NSRange(location: 0, length: self.length))
+    
+    var body: some View {
+        Markdown(text)
     }
 }
 
 struct SelectableText_Previews: PreviewProvider {
     struct SelectableTextContainer: View {
-        var text: String = """
-            hello **darkness** my old friend
-            ```swift
-            struct X: View {
-                var body: Some View {
-                    VStack {
-                    }
-                }
+        struct Msg: View {
+            @State var height: CGFloat = 0
+            var text: String
+            
+            init(_ text: String) {
+                self.text = text
             }
-            ```
 
-            """
+            var body: some View {
+                VStack {
+                    Text("Message")
+                    SelectableText(text)
+                }
+                .padding()
+            }
+        }
 
         var body: some View {
-            SelectableText(text)
+            List {
+                Msg("lol")
+                Msg("""
+                Today is the anniversary of the publication of Robert Frost’s iconic poem “Stopping by Woods on a Snowy Evening,” a fact that spurred the Literary Hub office into a long conversation about their favorite poems, the most iconic poems written in English, and which poems we should all have already read (or at least be reading next).
+                """)
+                Msg("Today is the anniversary of the publication of Robert Frost’s iconic poem “Stopping by Woods on a Snowy Evening,” a fact that spurred the Literary Hub office into a long conversation about their favorite poems, the most iconic poems written in English, and which poems we should all have already read (or at least be reading next).")
+                Msg("lol")
+            }.listStyle(.plain)
         }
     }
     
