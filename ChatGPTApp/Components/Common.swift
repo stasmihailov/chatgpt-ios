@@ -15,9 +15,14 @@ extension View {
                 .edgesIgnoringSafeArea(.all)
         )
     }
+    
+    public func dismissKeyboardOnTap() -> some View {
+        return self
+            .modifier(DismissKeyboardOnTap())
+    }
 }
 
-struct VisualEffectView: UIViewRepresentable {
+fileprivate struct VisualEffectView: UIViewRepresentable {
     let effect: UIVisualEffect
 
     func makeUIView(context: Context) -> UIVisualEffectView {
@@ -26,5 +31,15 @@ struct VisualEffectView: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
         uiView.effect = effect
+    }
+}
+
+fileprivate struct DismissKeyboardOnTap: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+        .background(Color.clear.onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                            to: nil, from: nil, for: nil)
+        })
     }
 }
