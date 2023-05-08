@@ -13,11 +13,8 @@ final class AppButtons {
             .foregroundColor(AppColors.accent)
     }
     
-    static func write(_ action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: "square.and.pencil")
-                .foregroundColor(AppColors.accent)
-        }
+    static func newChat() -> some View {
+        NewChatButton()
     }
     
     static func chatSettings(_ action: @escaping () -> Void) -> some View {
@@ -34,6 +31,47 @@ final class AppButtons {
         Button(action: action) {
             Text(label)
                 .foregroundColor(AppColors.accent)
+        }
+    }
+}
+
+fileprivate struct NewChatButton: View {
+    @State private var newChat: EChat? = nil
+    @State private var isActive = false
+
+    var body: some View {
+        Button(action: {
+            newChat = Persistence.shared.newChat()
+            isActive = true
+        }, label: {
+            Image(systemName: "square.and.pencil")
+                .foregroundColor(AppColors.accent)
+        })
+        .background(
+            NewChatNavigationLink(newChat: newChat, isActive: $isActive)
+        )
+    }
+}
+
+fileprivate struct NewChatNavigationLink: View {
+    var newChat: EChat?
+    @Binding var isActive: Bool
+
+    var body: some View {
+        NavigationLink(
+            destination: newChatX(),
+            isActive: $isActive) {
+                EmptyView()
+            }
+    }
+    
+    func newChatX() -> some View {
+        Group {
+            if newChat != nil {
+                Chat(thread: newChat!)
+            } else {
+                EmptyView()
+            }
         }
     }
 }

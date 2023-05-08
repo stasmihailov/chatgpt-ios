@@ -27,29 +27,19 @@ struct ChatList: View {
         }
     }
 
-    @State var newChat: EChat? = nil
-    @State var newChatIsActive: Bool = false
-
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ExistingChatList()
             .navigationTitle("Chats")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack {
-                        if newChat != nil {
-                            NewChatNavigationLink()
-                        }
-                        
                         if !network.isConnected {
                             OfflineModeLabel()
                         }
 
-                        AppButtons.write {
-                            newChat = ChatList.persistence.newChat()
-                            newChatIsActive = true
-                        }
+                        AppButtons.newChat()
                     }
                 }
             }
@@ -69,15 +59,6 @@ struct ChatList: View {
                 }
             }.listStyle(PlainListStyle())
         }
-    }
-
-    private func NewChatNavigationLink() -> some View {
-        NavigationLink(
-            destination: Chat(thread: newChat!),
-            isActive: $newChatIsActive
-        ) {
-            EmptyView()
-        }.hidden()
     }
 }
 

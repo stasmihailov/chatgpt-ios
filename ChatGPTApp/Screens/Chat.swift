@@ -67,28 +67,12 @@ struct Chat: View {
                 messageInput
             }
         }
-        .navigationBarBackButtonHidden(true)
-        .navigationBarItems(leading: goBackButton)
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Error"),
                   message: Text(alertText),
                   dismissButton: .default(Text("OK")) {
                 onHideAlert()
             })
-        }
-    }
-    
-    var goBackButton: some View {
-        Button(action: {
-            if thread.messageList.isEmpty {
-                discardChat()
-            }
-            self.presentationMode.wrappedValue.dismiss()
-        }) {
-            HStack {
-                Image(systemName: "chevron.left")
-                Text("Chats")
-            }
         }
     }
     
@@ -152,8 +136,6 @@ struct Chat: View {
 }
 
 struct ExistingChatBody: View {
-    @EnvironmentObject var network: NetworkStatus
-    
     @ObservedObject var thread: EChat
     var bottomPadding: CGFloat
     
@@ -170,21 +152,10 @@ struct ExistingChatBody: View {
         }
         .listStyle(PlainListStyle())
         .flip()
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                if !network.isConnected {
-                    OfflineModeLabel()
-                }
-
-                AppButtons.search()
-            }
-        }
     }
     
     func Msg(_ msg: LWMsg) -> some View {
         ChatMessage(message: msg)
-        .navigationTitle(thread.name!)
-        .navigationBarTitleDisplayMode(.inline)
         .listRowBackground(msg.source == .USER
                            ? AppColors.systemBg
                            : AppColors.bg)

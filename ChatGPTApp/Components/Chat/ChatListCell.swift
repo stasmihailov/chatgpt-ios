@@ -8,11 +8,23 @@
 import SwiftUI
 
 struct ChatListCell: View {
+    @EnvironmentObject var network: NetworkStatus
     @ObservedObject var thread: EChat
 
     var body: some View {
         let navLink = NavigationLink("") {
             Chat(thread: thread)
+            .navigationTitle(thread.name ?? "")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if !network.isConnected {
+                        OfflineModeLabel()
+                    }
+
+                    AppButtons.search()
+                }
+            }
         }.opacity(0)
         
         HStack {

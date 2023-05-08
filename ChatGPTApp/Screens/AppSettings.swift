@@ -45,18 +45,15 @@ struct AppSettings: View {
             
             Spacer()
         }
-            
-        
-        NavigationView {
-            settings
-            .padding()
-            .background(AppColors.bg)
-            .navigationBarTitle("Settings", displayMode: .inline)
-            .navigationBarItems(
-                trailing: Button("Done") {
-                    onSaveSettings()
-                })
-        }
+
+        settings
+        .padding()
+        .background(AppColors.bg)
+        .navigationBarTitle("Settings", displayMode: .inline)
+        .navigationBarItems(
+            trailing: Button("Done") {
+                onSaveSettings()
+            })
     }
 }
 
