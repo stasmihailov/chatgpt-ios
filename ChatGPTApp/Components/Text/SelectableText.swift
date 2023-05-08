@@ -6,52 +6,51 @@
 //
 import SwiftUI
 import UIKit
-import MarkdownUI
+import Introspect
 
 struct SelectableText: View {
-    var text: String
+    @State var textEditorHeight : CGFloat = 0
+    var input: String
     
-    init(_ text: String) {
-        self.text = text
+    init(_ input: String) {
+        self.input = input
     }
     
     var body: some View {
-        Markdown(text)
-    }
-}
+        let overlay = Text(input)
+            .font(.system(.body))
+            .foregroundColor(.clear)
+            .background(GeometryReader {
+                Color.clear.preference(key: ViewHeightKey.self,
+                                       value: $0.frame(in: .local).size.height)
+            })
 
-struct SelectableText_Previews: PreviewProvider {
-    struct SelectableTextContainer: View {
-        struct Msg: View {
-            @State var height: CGFloat = 0
-            var text: String
-            
-            init(_ text: String) {
-                self.text = text
+        let editorHeight = textEditorHeight + 18
+        let editor = TextEditor(text: .constant(input))
+            .font(.system(.body))
+            .frame(height: editorHeight)
+            .fixedSize(horizontal: false, vertical: true)
+            .scrollDisabled(true)
+            .scrollContentBackground(.hidden)
+            .background(.clear)
+            .introspectTextView {
+                $0.isEditable = false
+                $0.textContainer.lineFragmentPadding = 0
+                $0.textContainerInset = .zero
             }
-
-            var body: some View {
-                VStack {
-                    Text("Message")
-                    SelectableText(text)
-                }
-                .padding()
-            }
-        }
-
-        var body: some View {
-            List {
-                Msg("lol")
-                Msg("""
-                Today is the anniversary of the publication of Robert Frost’s iconic poem “Stopping by Woods on a Snowy Evening,” a fact that spurred the Literary Hub office into a long conversation about their favorite poems, the most iconic poems written in English, and which poems we should all have already read (or at least be reading next).
-                """)
-                Msg("Today is the anniversary of the publication of Robert Frost’s iconic poem “Stopping by Woods on a Snowy Evening,” a fact that spurred the Literary Hub office into a long conversation about their favorite poems, the most iconic poems written in English, and which poems we should all have already read (or at least be reading next).")
-                Msg("lol")
-            }.listStyle(.plain)
+        
+        ZStack(alignment: .leading) {
+            overlay
+            editor
+        }.onPreferenceChange(ViewHeightKey.self) {
+            textEditorHeight = $0
         }
     }
     
-    static var previews: some View {
-        SelectableTextContainer()
+    struct ViewHeightKey: PreferenceKey {
+        static var defaultValue: CGFloat { 0 }
+        static func reduce(value: inout Value, nextValue: () -> Value) {
+            value = value + nextValue()
+        }
     }
 }

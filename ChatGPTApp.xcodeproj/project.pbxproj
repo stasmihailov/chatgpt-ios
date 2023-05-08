@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8F033F1A2A08EA9900D5AD40 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F033F192A08EA9900D5AD40 /* KeychainManager.swift */; };
+		8F033F1D2A08ED0100D5AD40 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8F033F1C2A08ED0100D5AD40 /* Introspect */; };
+		8F033F1F2A08EE6400D5AD40 /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F033F1E2A08EE6400D5AD40 /* ChatMessage.swift */; };
 		8F0E821429ED9D8200047583 /* ChatGPTApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E821329ED9D8200047583 /* ChatGPTApp.swift */; };
 		8F0E821629ED9D8200047583 /* AppBody.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F0E821529ED9D8200047583 /* AppBody.swift */; };
 		8F0E821829ED9D8300047583 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F0E821729ED9D8300047583 /* Assets.xcassets */; };
@@ -37,7 +39,6 @@
 		8F96531B29FADDA60051F2FF /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96531A29FADDA60051F2FF /* LandingUITests.swift */; };
 		8F96531C29FADDA60051F2FF /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96531A29FADDA60051F2FF /* LandingUITests.swift */; };
 		8F96531D29FADDA60051F2FF /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96531A29FADDA60051F2FF /* LandingUITests.swift */; };
-		8FCEA6782A086FCD0086930C /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8FCEA6772A086FCD0086930C /* MarkdownUI */; };
 		8FF238D629F1622900CE47D7 /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF238D529F1622900CE47D7 /* Api.swift */; };
 		8FF2391429F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FF2391229F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld */; };
 		8FF2391629F1B13200CE47D7 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF2391529F1B13200CE47D7 /* Persistence.swift */; };
@@ -65,6 +66,7 @@
 
 /* Begin PBXFileReference section */
 		8F033F192A08EA9900D5AD40 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		8F033F1E2A08EE6400D5AD40 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		8F0E821029ED9D8200047583 /* ChatGPTApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatGPTApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F0E821329ED9D8200047583 /* ChatGPTApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatGPTApp.swift; sourceTree = "<group>"; };
 		8F0E821529ED9D8200047583 /* AppBody.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBody.swift; sourceTree = "<group>"; };
@@ -107,7 +109,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FCEA6782A086FCD0086930C /* MarkdownUI in Frameworks */,
+				8F033F1D2A08ED0100D5AD40 /* Introspect in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -210,6 +212,7 @@
 				8F0E825129EF51DE00047583 /* Landing.swift */,
 				8F96531A29FADDA60051F2FF /* LandingUITests.swift */,
 				8F0E824D29EEE24D00047583 /* Chat.swift */,
+				8F033F1E2A08EE6400D5AD40 /* ChatMessage.swift */,
 				8F0E824529EEE0D700047583 /* ChatList.swift */,
 				8F0E825329EF6B1700047583 /* ChatSettings.swift */,
 				8F0E824229EEE07C00047583 /* AppSettings.swift */,
@@ -267,7 +270,7 @@
 			);
 			name = ChatGPTApp;
 			packageProductDependencies = (
-				8FCEA6772A086FCD0086930C /* MarkdownUI */,
+				8F033F1C2A08ED0100D5AD40 /* Introspect */,
 			);
 			productName = ChatGPTApp;
 			productReference = 8F0E821029ED9D8200047583 /* ChatGPTApp.app */;
@@ -342,7 +345,7 @@
 			);
 			mainGroup = 8F0E820729ED9D8200047583;
 			packageReferences = (
-				8FCEA6762A086FCD0086930C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				8F033F1B2A08ED0100D5AD40 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = 8F0E821129ED9D8200047583 /* Products */;
 			projectDirPath = "";
@@ -404,6 +407,7 @@
 				8F0E824E29EEE24D00047583 /* Chat.swift in Sources */,
 				8F0E823F29EDABEE00047583 /* ClearableText.swift in Sources */,
 				8F2F4DE52A08496F0073609C /* SelectableText.swift in Sources */,
+				8F033F1F2A08EE6400D5AD40 /* ChatMessage.swift in Sources */,
 				8FF2391429F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld in Sources */,
 				8F0E824329EEE07C00047583 /* AppSettings.swift in Sources */,
 				8F1B58532A06CA8E00C95F43 /* System.swift in Sources */,
@@ -747,21 +751,21 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		8FCEA6762A086FCD0086930C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+		8F033F1B2A08ED0100D5AD40 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
+				minimumVersion = 0.2.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		8FCEA6772A086FCD0086930C /* MarkdownUI */ = {
+		8F033F1C2A08ED0100D5AD40 /* Introspect */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 8FCEA6762A086FCD0086930C /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
-			productName = MarkdownUI;
+			package = 8F033F1B2A08ED0100D5AD40 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
 		};
 /* End XCSwiftPackageProductDependency section */
 
