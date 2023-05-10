@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ChatListCell: View {
+    @EnvironmentObject var persistence: Persistence
     @EnvironmentObject var network: NetworkStatus
     @ObservedObject var thread: EChat
 
@@ -46,12 +47,12 @@ struct ChatListCell: View {
         .swipeActions(edge: .leading) {
             Button(!thread.pinned ? "Pin" : "Unpin") {
                 thread.pinned.toggle()
-                Persistence.shared.saveContext()
+                persistence.saveContext()
             }.tint(.gray)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button("Delete") {
-                Persistence.shared.delete(chat: thread)
+                persistence.delete(chat: thread)
             }.tint(.red)
         }
     }

@@ -19,8 +19,8 @@ extension View {
 struct Chat: View {
     @EnvironmentObject var keychain: KeychainManagerWrapper
     @EnvironmentObject var api: OpenAIApiWrapper
+    @EnvironmentObject var persistence: Persistence
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    var persistence = Persistence.shared
 
     @State var message = ""
     @State var showAlert = false
@@ -173,6 +173,7 @@ struct Chat_Previews: PreviewProvider {
         Chat(thread: thread)
             .environmentObject(keychain)
             .environmentObject(api)
+            .environmentObject(Persistence.shared)
             .environmentObject(NetworkStatus())
     }
 }

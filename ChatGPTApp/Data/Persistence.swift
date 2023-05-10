@@ -7,7 +7,7 @@
 
 import CoreData
 
-class Persistence {
+class Persistence: ObservableObject {
     static let shared = Persistence()
     let container: NSPersistentContainer
     let context: NSManagedObjectContext
@@ -31,7 +31,6 @@ class Persistence {
     }
     
     private func deleteAllEntities(ofType type: String) {
-        let context = Persistence.shared.context
         let coordinator = context.persistentStoreCoordinator
 
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: type)

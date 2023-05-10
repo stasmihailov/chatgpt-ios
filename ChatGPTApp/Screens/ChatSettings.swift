@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ChatSettings: View {
+    @EnvironmentObject var persistence: Persistence
     @ObservedObject var chat: EChat
 
     @State private var chatNameState: String
@@ -44,7 +45,7 @@ struct ChatSettings: View {
             chat.name = chatNameState
             chat.model = modelState
 
-            Persistence.shared.saveContext()
+            persistence.saveContext()
         }
     
         VStack {
@@ -76,5 +77,6 @@ struct ChatSettings_Previews: PreviewProvider {
 
     static var previews: some View {
         ChatSettingsWrapper()
+            .environmentObject(Persistence.shared)
     }
 }

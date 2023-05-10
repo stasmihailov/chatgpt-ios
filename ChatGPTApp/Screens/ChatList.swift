@@ -11,7 +11,7 @@ struct ChatList: View {
     @EnvironmentObject var keychain: KeychainManagerWrapper
     @EnvironmentObject var api: OpenAIApiWrapper
     @EnvironmentObject var network: NetworkStatus
-    static var persistence = Persistence.shared
+    @EnvironmentObject var persistence: Persistence
 
     @FetchRequest(
         entity: EChat.entity(),
@@ -71,5 +71,6 @@ struct ChatList_Previews: PreviewProvider {
             .environmentObject(keychain)
             .environmentObject(api)
             .environmentObject(NetworkStatus())
+            .environmentObject(Persistence.shared)
     }
 }
