@@ -25,6 +25,15 @@ class Persistence: ObservableObject {
         context.automaticallyMergesChangesFromParent = true
     }
     
+    func new<T: NSManagedObject>(_ type: T.Type) -> T {
+        return type.init(context: context)
+    }
+    
+    func delete(_ object: NSManagedObject) {
+        context.delete(object)
+        saveContext()
+    }
+    
     func deleteAllEntities() {
         deleteAllEntities(ofType: "EChat")
         deleteAllEntities(ofType: "EChatMsg")

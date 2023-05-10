@@ -64,20 +64,16 @@ public class EChat: NSManagedObject {
     }
     
     func newMessage(source: EChatMsgSource, text: String) -> EChatMsg {
-        let ctx = Persistence.shared.context
+        let persistence = Persistence.shared
         
-        let msg = EChatMsg(context: ctx)
+        let msg = persistence.new(EChatMsg.self)
         msg.source = source
         msg.text = text
         msg.time = Date()
         msg.chat = self
-        
-        do {
-            try ctx.save()
-        } catch {
-            // on error
-        }
-        
+
+        persistence.saveContext()
+
         return msg
     }
 

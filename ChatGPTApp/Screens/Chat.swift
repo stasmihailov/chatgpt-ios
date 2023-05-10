@@ -73,6 +73,10 @@ struct Chat: View {
                   dismissButton: .default(Text("OK")) {
                 onHideAlert()
             })
+        }.onDisappear {
+            if thread.messageList.isEmpty {
+                discardChat()
+            }
         }
     }
     
@@ -94,7 +98,7 @@ struct Chat: View {
     }
 
     private func discardChat() {
-        persistence.context.delete(thread)
+        persistence.delete(thread)
     }
 
     private func sendMessage() {

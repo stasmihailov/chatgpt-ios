@@ -14,10 +14,10 @@
             filePath = "ChatGPTApp/Screens/Chat.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "67"
-            endingLineNumber = "67"
-            landmarkName = "body"
-            landmarkType = "24">
+            startingLineNumber = "121"
+            endingLineNumber = "121"
+            landmarkName = "sendMessage()"
+            landmarkType = "7">
             <Locations>
                <Location
                   uuid = "D30F1034-AE50-4DC4-B350-76CB83A9B8C1 - 9284d7ba0bdc9ca3"
@@ -62,10 +62,10 @@
             filePath = "ChatGPTApp/Screens/Chat.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
-            landmarkName = "body"
-            landmarkType = "24">
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "sendMessage()"
+            landmarkType = "7">
             <Locations>
                <Location
                   uuid = "251ABDEE-BE01-4AC2-898B-14C4EB75DDD3 - 9284d7ba0bdc9ca3"
@@ -114,22 +114,6 @@
             endingLineNumber = "45"
             landmarkName = "chatText"
             landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "0FBCD4A1-B25C-4002-9B84-F9395EBB5B6C"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "ChatGPTApp/Screens/Chat.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
-            landmarkName = "Chat"
-            landmarkType = "14">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
