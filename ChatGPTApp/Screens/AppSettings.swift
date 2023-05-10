@@ -49,6 +49,7 @@ struct AppSettings: View {
         settings
         .padding()
         .background(AppColors.bg)
+        .dismissKeyboardOnTap()
         .navigationBarTitle("Settings", displayMode: .inline)
         .navigationBarItems(
             trailing: Button("Done") {

@@ -18,7 +18,10 @@ extension View {
     
     public func dismissKeyboardOnTap() -> some View {
         return self
-            .modifier(DismissKeyboardOnTap())
+            .onTapGesture {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
+                                                to: nil, from: nil, for: nil)
+            }
     }
 }
 
@@ -31,15 +34,5 @@ fileprivate struct VisualEffectView: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIVisualEffectView, context: Context) {
         uiView.effect = effect
-    }
-}
-
-fileprivate struct DismissKeyboardOnTap: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-        .background(Color.clear.onTapGesture {
-            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),
-                                            to: nil, from: nil, for: nil)
-        })
     }
 }

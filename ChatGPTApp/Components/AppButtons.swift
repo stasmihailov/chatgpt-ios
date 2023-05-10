@@ -46,6 +46,7 @@ fileprivate struct NewChatButton: View {
         }, label: {
             Image(systemName: "square.and.pencil")
                 .foregroundColor(AppColors.accent)
+                .padding(6)
         })
         .background(
             NewChatNavigationLink(newChat: newChat, isActive: $isActive)

@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct ClearableText: View {
+    @FocusState var isFocused: Bool
     @Binding var text: String
     var placeholder: String
     var secure: Bool
@@ -32,6 +33,10 @@ struct ClearableText: View {
         .padding(16)
         .background(AppColors.systemBg)
         .cornerRadius(8)
+        .focused($isFocused)
+        .onTapGesture {
+            isFocused = true
+        }
     }
 }
 
