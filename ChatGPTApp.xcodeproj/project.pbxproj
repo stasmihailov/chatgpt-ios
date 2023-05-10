@@ -93,10 +93,10 @@
 		8F533D2F29EFFF4600D7B389 /* MultilineText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultilineText.swift; sourceTree = "<group>"; };
 		8F533D3129F04C5B00D7B389 /* AppButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppButtons.swift; sourceTree = "<group>"; };
 		8F81075B29F816EC001AC2CE /* KeychainManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManagerTests.swift; sourceTree = "<group>"; };
-		8F81075E29F81742001AC2CE /* ApiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiTests.swift; sourceTree = "<group>"; };
+		8F81075E29F81742001AC2CE /* ApiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ApiTests.swift; path = ../ApiTests.swift; sourceTree = "<group>"; };
 		8F931A8029FDABEF006975FF /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		8F96531A29FADDA60051F2FF /* LandingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingUITests.swift; sourceTree = "<group>"; };
-		8FF238D529F1622900CE47D7 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Api.swift; sourceTree = "<group>"; };
+		8FF238D529F1622900CE47D7 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Api.swift; path = ../Api.swift; sourceTree = "<group>"; };
 		8FF2391329F1B10100CE47D7 /* ChatGPTApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChatGPTApp.xcdatamodel; sourceTree = "<group>"; };
 		8FF2391529F1B13200CE47D7 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		8FF2392029F1B66000CE47D7 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -159,8 +159,6 @@
 				8F1B58522A06CA8E00C95F43 /* System.swift */,
 				8F0E821329ED9D8200047583 /* ChatGPTApp.swift */,
 				8F0E821529ED9D8200047583 /* AppBody.swift */,
-				8FF238D529F1622900CE47D7 /* Api.swift */,
-				8F81075E29F81742001AC2CE /* ApiTests.swift */,
 				8FF2391229F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld */,
 				8F0E821729ED9D8300047583 /* Assets.xcassets */,
 				8F0E821929ED9D8300047583 /* Preview Content */,
@@ -234,6 +232,8 @@
 		8FF2392829F1B66600CE47D7 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				8FF238D529F1622900CE47D7 /* Api.swift */,
+				8F81075E29F81742001AC2CE /* ApiTests.swift */,
 				8FF2391529F1B13200CE47D7 /* Persistence.swift */,
 				8F931A8029FDABEF006975FF /* PersistenceTests.swift */,
 				8FF2392029F1B66000CE47D7 /* Models.swift */,

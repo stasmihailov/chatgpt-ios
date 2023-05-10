@@ -31,7 +31,7 @@ struct Chat: View {
 
     var body: some View {
         let chatInput = ChatInput(message: $message) {
-            onSend()
+            sendMessage()
         }
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
             if !thread.messageList.isEmpty {
@@ -87,11 +87,7 @@ struct Chat: View {
             }
         )
     }
-    
-    func onSend() {
-        sendMessage()
-    }
-    
+
     func onHideAlert() {
         showAlert = false
         alertText = ""
@@ -160,16 +156,6 @@ struct ExistingChatBody: View {
                            ? AppColors.systemBg
                            : AppColors.bg)
         .listRowSeparator(.hidden)
-    }
-}
-
-extension UINavigationController: UIGestureRecognizerDelegate {
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        interactivePopGestureRecognizer?.delegate = self
-    }
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return viewControllers.count > 1
     }
 }
 
