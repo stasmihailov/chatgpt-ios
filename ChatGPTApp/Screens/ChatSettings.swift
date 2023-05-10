@@ -61,7 +61,7 @@ struct ChatSettings: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 doneButton
             }
-        }
+        }.dismissKeyboardOnTap()
     }
 }
 

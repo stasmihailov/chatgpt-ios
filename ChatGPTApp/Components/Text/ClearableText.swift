@@ -28,9 +28,10 @@ struct ClearableText: View {
                 TextField(placeholder, text: $text)
             }
         }
-        .frame(height: 22)
+        .frame(height: 54)
         .showClearButton($text)
-        .padding(16)
+        .padding(.leading, 16)
+        .padding(.trailing, 16)
         .background(AppColors.systemBg)
         .cornerRadius(8)
         .focused($isFocused)
