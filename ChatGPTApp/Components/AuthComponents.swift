@@ -8,17 +8,17 @@
 import SwiftUI
 import GoogleSignIn
 
-class GoogleAuth {
-    private let user = GIDSignIn.sharedInstance.currentUser
-
-    static func signInButton() -> any View {
-        GoogleSignInButton()
-    }
+struct AuthPanel: View {
+    @EnvironmentObject var auth: AppAuthentication
     
-    static func username() -> any View {
-        let user = GIDSignIn.sharedInstance.currentUser
-        
-        return Text(user?.profile?.name ?? "---")
+    var body: some View {
+        HStack {
+            Text("Sign in to store your chats")
+            Spacer()
+            GoogleSignInButton()
+        }
+        .padding(.top, 20)
+        .padding(.bottom, 20)
     }
 }
 
@@ -27,7 +27,7 @@ fileprivate struct GoogleSignInButton: View {
 
     var body: some View {
         Btn()
-            .padding()
+            .frame(width: 120, height: 20)
             .onTapGesture {
                 auth.signIn()
             }
@@ -38,13 +38,47 @@ fileprivate struct GoogleSignInButton: View {
         
         private var button = GIDSignInButton()
         
-        func makeUIView(context: Context) -> GIDSignInButton {
+        func makeUIView(context: Context) -> UIView {
             button.colorScheme = colorScheme == .dark ? .dark : .light
-            return button
+
+            let view = UIStackView()
+            view.axis = .horizontal
+            view.alignment = .center
+            view.addArrangedSubview(button)
+
+            let wrapper = UIView()
+            wrapper.addSubview(view)
+            
+            view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                view.centerXAnchor.constraint(equalTo: wrapper.centerXAnchor),
+                view.centerYAnchor.constraint(equalTo: wrapper.centerYAnchor),
+                view.leadingAnchor.constraint(greaterThanOrEqualTo: wrapper.leadingAnchor),
+                view.trailingAnchor.constraint(lessThanOrEqualTo: wrapper.trailingAnchor)
+            ])
+            
+            return wrapper
         }
         
         func updateUIView(_ uiView: UIViewType, context: Context) {
-            button.colorScheme = colorScheme == .dark ? .dark : .light
+            if let button = uiView.subviews.first as? GIDSignInButton {
+                button.colorScheme = colorScheme == .dark ? .dark : .light
+            }
         }
+    }
+}
+
+struct AuthComponents_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack {
+            Spacer()
+            HStack {
+                GoogleSignInButton()
+            }
+            .padding()
+            .background(Color.blue)
+            Spacer()
+        }.background(Color.white)
+        .environmentObject(AppAuthentication())
     }
 }

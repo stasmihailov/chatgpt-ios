@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct AppSettings: View {
-    @State var apiKey: String;
     @EnvironmentObject var keychain: KeychainManagerWrapper
+    @EnvironmentObject var auth: AppAuthentication
+    
+    @State var apiKey: String
     
     private func onSaveSettings() {
         let result = keychain.saveApiToken(apiKey)
@@ -29,6 +31,10 @@ struct AppSettings: View {
     
     var body: some View {
         var settings = VStack {
+            if auth.user == nil {
+                AuthPanel()
+            }
+            
             ClearableText($apiKey,
                 placeholder: "Enter new API key",
                 secure: true
@@ -45,16 +51,32 @@ struct AppSettings: View {
             
             Spacer()
         }
-
-        settings
         .padding()
         .background(AppColors.bg)
         .dismissKeyboardOnTap()
-        .navigationBarTitle("Settings", displayMode: .inline)
-        .navigationBarItems(
-            trailing: Button("Done") {
-                onSaveSettings()
-            })
+        
+        NavigationView {
+            settings
+            .navigationBarTitle(
+                auth.user != nil ? "Hello, " + auth.user!.profile!.givenName! : "",
+                displayMode: auth.user != nil ? .large : .inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: onSaveSettings, label: {
+                        Text("Done")
+                            .bold()
+                    })
+                }
+
+                if auth.user != nil {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        AppButtons.destructive(label: "Sign out") {
+                            auth.signOut()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

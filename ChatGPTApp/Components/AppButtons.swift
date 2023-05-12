@@ -27,6 +27,13 @@ final class AppButtons {
         }
     }
     
+    static func destructive(label: String, _ action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(label)
+                .foregroundColor(AppColors.accentDestructive)
+        }
+    }
+    
     static func action(label: String, _ action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(label)

@@ -16,7 +16,7 @@ enum AuthState {
 }
 
 class AppAuthentication: ObservableObject {
-    @Published var authState: AuthState = .anonymous
+    @Published var user: GIDGoogleUser? = nil
 
     var googleAuth: GIDSignIn { get { GIDSignIn.sharedInstance } }
     var firebaseAuth: Auth { get { Auth.auth() } }
@@ -31,9 +31,16 @@ class AppAuthentication: ObservableObject {
             return
         }
 
+        guard let clientID = FirebaseApp.app()?.options.clientID else {
+            print("clientID was nil")
+            return
+        }
+        let configuration = GIDConfiguration(clientID: clientID)
+
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
         guard let rootViewController = windowScene.windows.first?.rootViewController else { return }
 
+        googleAuth.configuration = configuration
         googleAuth.signIn(withPresenting: rootViewController) { [unowned self] result, error in
             withErrorCheck(result?.user, error) {
                 authenticateUser(with: result!.user)
@@ -47,7 +54,7 @@ class AppAuthentication: ObservableObject {
         do {
             try firebaseAuth.signOut()
             
-            self.authState = .anonymous
+            self.user = nil
         } catch {
             print(error.localizedDescription)
         }
@@ -63,12 +70,18 @@ class AppAuthentication: ObservableObject {
             withIDToken: idToken.tokenString,
             accessToken: user.accessToken.tokenString)
 
-        firebaseAuth.signIn(with: credential) { [unowned self] (_, error) in
+        firebaseAuth.signIn(with: credential) { result, error in
             if let error = error {
                 print(error.localizedDescription)
-            } else {
-                self.authState = .signedIn
+                return
             }
+            
+            guard let result = result else {
+                print("result was nil")
+                return
+            }
+            
+            self.user = self.googleAuth.currentUser
         }
     }
 
@@ -78,7 +91,7 @@ class AppAuthentication: ObservableObject {
             return
         }
 
-        guard let user = user else {
+        guard user != nil else {
             print("user is nil")
             return
         }

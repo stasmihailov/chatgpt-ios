@@ -61,10 +61,6 @@ struct ChatList: View {
                     ForEach(pinnedChats, id: \.self) { chat in
                         ChatListCell(thread: chat)
                     }
-                } header: {
-                    if !pinnedChats.isEmpty && !unpinnedChats.isEmpty {
-                        Text("Pinned").subheadline()
-                    }
                 }
                 Section {
                     ForEach(unpinnedChats, id: \.self) { chat in
@@ -73,7 +69,7 @@ struct ChatList: View {
                 } header: {
                     if !pinnedChats.isEmpty && !unpinnedChats.isEmpty {
                         HStack {
-                            Text("Other").subheadline()
+                            Text("Unpinned").subheadline()
                             Spacer()
                             AppButtons.destructive(label: "Delete all") {
                                 unpinnedChats.forEach { chat in
