@@ -21,13 +21,20 @@ class AppAuthentication: ObservableObject {
     var googleAuth: GIDSignIn { get { GIDSignIn.sharedInstance } }
     var firebaseAuth: Auth { get { Auth.auth() } }
     
-    func signIn() {
+    func tryRestorePreviousSignIn() -> Bool {
         if googleAuth.hasPreviousSignIn() {
-            googleAuth.restorePreviousSignIn { [unowned self] user, error in
-                withErrorCheck(user, error) {
-                    authenticateUser(with: user!)
+            googleAuth.restorePreviousSignIn { user, error in
+                self.withErrorCheck(user, error) {
+                    self.authenticateUser(with: user!)
                 }
             }
+            return true
+        }
+        return false
+    }
+    
+    func signIn() {
+        if tryRestorePreviousSignIn() {
             return
         }
 
@@ -41,9 +48,9 @@ class AppAuthentication: ObservableObject {
         guard let rootViewController = windowScene.windows.first?.rootViewController else { return }
 
         googleAuth.configuration = configuration
-        googleAuth.signIn(withPresenting: rootViewController) { [unowned self] result, error in
-            withErrorCheck(result?.user, error) {
-                authenticateUser(with: result!.user)
+        googleAuth.signIn(withPresenting: rootViewController) { result, error in
+            self.withErrorCheck(result?.user, error) {
+                self.authenticateUser(with: result!.user)
             }
         }
     }

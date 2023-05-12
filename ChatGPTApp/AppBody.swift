@@ -61,6 +61,7 @@ struct AppBody: View {
     init() {
         keychain = KeychainManagerWrapper(KeychainManagerImpl())
         api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
+        auth.tryRestorePreviousSignIn()
     }
     
     var body: some View {
