@@ -26,6 +26,9 @@ struct ChatList: View {
                 .sorted(using: SortDescriptor(\EChat.pinned, order: .reverse))
         }
     }
+    
+    var pinnedChats: [EChat] { get { chats.filter { $0.pinned } } }
+    var unpinnedChats: [EChat] { get { chats.filter { !$0.pinned } } }
 
     var body: some View {
         NavigationStack {
@@ -54,8 +57,31 @@ struct ChatList: View {
             }
             
             List {
-                ForEach(chats, id: \.self) { chat in
-                    ChatListCell(thread: chat)
+                Section {
+                    ForEach(pinnedChats, id: \.self) { chat in
+                        ChatListCell(thread: chat)
+                    }
+                } header: {
+                    if !pinnedChats.isEmpty && !unpinnedChats.isEmpty {
+                        Text("Pinned").subheadline()
+                    }
+                }
+                Section {
+                    ForEach(unpinnedChats, id: \.self) { chat in
+                        ChatListCell(thread: chat)
+                    }
+                } header: {
+                    if !pinnedChats.isEmpty && !unpinnedChats.isEmpty {
+                        HStack {
+                            Text("Other").subheadline()
+                            Spacer()
+                            AppButtons.destructive(label: "Delete all") {
+                                unpinnedChats.forEach { chat in
+                                    persistence.delete(chat: chat)
+                                }
+                            }
+                        }
+                    }
                 }
             }.listStyle(PlainListStyle())
         }
