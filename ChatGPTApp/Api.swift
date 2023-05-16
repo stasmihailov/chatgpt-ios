@@ -124,9 +124,9 @@ class OpenAIApiImpl: OpenAIApi {
         req.setValue("Bearer " + token, forHTTPHeaderField: "Authorization")
         req.setValue("application/json", forHTTPHeaderField: "Content-Type")
         do {
-            let messagesJson = Coders.encode(messages: chat.messageList)
+            let messagesJson = Coders.encode(messages: chat.sortedMessages)
             let body: [String : Any] = [
-                "model": chat.model!,
+                "model": chat.model,
                 "user": "masteryoda",
                 "stream": true,
                 "messages": messagesJson,
@@ -148,7 +148,7 @@ class OpenAIApiImpl: OpenAIApi {
 }
 
 class Coders {
-    public static func encode(role: EChatMsgSource) -> String {
+    public static func encode(role: EMsgSource) -> String {
         switch role {
         case .USER:
             return "user"
@@ -157,12 +157,12 @@ class Coders {
         }
     }
     
-    public static func encode(messages: [EChatMsg]) -> [[String: String]] {
+    public static func encode(messages: [EMsg]) -> [[String: String]] {
         let chatMessages: [[String: String]] = messages
-            .sorted(by: { $0.time! < $1.time! })
+            .sorted(by: { $0.time < $1.time })
             .map({ [
                 "role": encode(role: $0.source),
-                "content": $0.text!,
+                "content": $0.text,
             ] })
             
         var allMessages: [[String: String]] = [

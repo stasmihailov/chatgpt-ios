@@ -13,17 +13,11 @@ struct ChatList: View {
     @EnvironmentObject var network: NetworkStatus
     @EnvironmentObject var persistence: Persistence
 
-    @FetchRequest(
-        entity: EChat.entity(),
-        sortDescriptors: [],
-        predicate: NSPredicate(format: "messages.@count > 0")
-    ) var allChats: FetchedResults<EChat>
-    
     var chats: [EChat] {
         get {
-            return allChats
+            return persistence.chats
                 .sorted { $0.lastMessageTime > $1.lastMessageTime }
-                .sorted(using: SortDescriptor(\EChat.pinned, order: .reverse))
+                .sorted { $0.pinned && !$1.pinned }
         }
     }
     
@@ -58,13 +52,15 @@ struct ChatList: View {
             
             List {
                 Section {
-                    ForEach(pinnedChats, id: \.self) { chat in
-                        ChatListCell(thread: chat)
+                    ForEach(pinnedChats) { (chat: EChat) in
+//                        ChatListCell(thread: chat)
+                        Text("ok")
                     }
                 }
                 Section {
-                    ForEach(unpinnedChats, id: \.self) { chat in
-                        ChatListCell(thread: chat)
+                    ForEach(unpinnedChats) { chat in
+//                        ChatListCell(thread: chat)
+                        Text("ok")
                     }
                 } header: {
                     if !pinnedChats.isEmpty && !unpinnedChats.isEmpty {
@@ -88,11 +84,12 @@ struct ChatList_Previews: PreviewProvider {
     static var previews: some View {
         let keychain = KeychainManagerWrapper(KeychainManagerImpl())
         let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
+        let persistence = Persistence()
     
         ChatList()
             .environmentObject(keychain)
             .environmentObject(api)
             .environmentObject(NetworkStatus())
-            .environmentObject(Persistence.shared)
+            .environmentObject(persistence)
     }
 }

@@ -27,14 +27,14 @@ struct Chat: View {
     @State var alertText = ""
     @State var chatSettingsIsActive = false
 
-    @ObservedObject var thread: EChat
+    @Binding var thread: EChat
 
     var body: some View {
         let chatInput = ChatInput(message: $message) {
             sendMessage()
         }
         let messageInput = HStack(alignment: .bottom, spacing: 5) {
-            if !thread.messageList.isEmpty {
+            if !thread.messages.isEmpty {
                 chatParamsButton
             }
             chatInput
@@ -43,9 +43,9 @@ struct Chat: View {
         .tinted()
     
         ZStack {
-            if thread.messageList.isEmpty {
+            if thread.messages.isEmpty {
                 VStack {
-                    ChatModelPicker(model: thread.modelBinding)
+                    ChatModelPicker(model: $thread.model)
                         .padding(.bottom, 64)
                     Text("Enter a new message to start the chat. Select a model above (you can change it later)")
                         .foregroundColor(Color(UIColor.systemGray))
@@ -56,10 +56,10 @@ struct Chat: View {
                 
             } else {
                 ExistingChatBody(
-                    thread: thread,
+                    thread: $thread,
                     bottomPadding: chatInput.minHeight - 2
                 )
-                .frame(maxHeight: .infinity)
+                .frame(maxWidth: .infinity)
             }
 
             VStack {
@@ -74,7 +74,7 @@ struct Chat: View {
                 onHideAlert()
             })
         }.onDisappear {
-            if thread.messageList.isEmpty {
+            if thread.messages.isEmpty {
                 discardChat()
             }
         }
@@ -85,7 +85,7 @@ struct Chat: View {
             self.chatSettingsIsActive = true
         }
         .background(NavigationLink(
-            destination: ChatSettings(chat: thread),
+            destination: ChatSettings(chat: $thread),
             isActive: $chatSettingsIsActive) {
                 EmptyView()
             }
@@ -98,7 +98,7 @@ struct Chat: View {
     }
 
     private func discardChat() {
-        persistence.delete(thread)
+        persistence.delete(chat: thread)
     }
 
     private func sendMessage() {
@@ -108,39 +108,38 @@ struct Chat: View {
         }
 
         let msg = message
-        thread.newMessage(source: .USER, text: msg)
+        thread.messages.append(EMsg(source: .USER, text: msg))
+        persistence.update(chat: thread)
         message = ""
         
-        var lastResponse = thread.newMessage(source: .ASSISTANT, text: "")
+        var lastResponse = EMsg(source: .ASSISTANT, text: "")
+        thread.messages.append(lastResponse)
+        persistence.update(chat: thread)
 
         api.chatCompletion(for: thread, token: token)
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .finished:
-                    persistence.saveContext()
                     break
                 case .failure(let err):
                     self.alertText = err.error
                     self.showAlert = true
                     break
                 }
+                persistence.update(chat: thread)
             }, receiveValue: { value in
-                lastResponse.text!.append(value)
-                lastResponse.objectWillChange.send()
-                thread.objectWillChange.send()
-                
-                persistence.saveContext()
+                lastResponse.text.append(value)
             }).store(in: &api.cancellables)
     }
 }
 
 struct ExistingChatBody: View {
-    @ObservedObject var thread: EChat
+    @Binding var thread: EChat
     var bottomPadding: CGFloat
     
     var body: some View {
-        let messages = thread.messageList.reversed()
+        let messages = thread.sortedMessages.reversed()
         
         List {
             Spacer()
@@ -170,14 +169,30 @@ struct Chat_Previews: PreviewProvider {
         return keychain
     }
     
+    private struct Preview: View {
+        @State var persistence = Persistence()
+        
+        init() {
+            persistence.fetchChats()
+        }
+        
+        var body: some View {
+            if persistence.chats.isEmpty {
+                Text("Waiting for chats...")
+            } else {
+                let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
+                var thread = persistence.chats[0]
+                
+                Chat(thread: .init(get: { thread }, set: { thread = $0 }))
+                    .environmentObject(keychain)
+                    .environmentObject(api)
+                    .environmentObject(persistence)
+                    .environmentObject(NetworkStatus())
+            }
+        }
+    }
+    
     static var previews: some View {
-        let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
-        let thread = Persistence.shared.fetchChats()[0]
-
-        Chat(thread: thread)
-            .environmentObject(keychain)
-            .environmentObject(api)
-            .environmentObject(Persistence.shared)
-            .environmentObject(NetworkStatus())
+        Preview()
     }
 }

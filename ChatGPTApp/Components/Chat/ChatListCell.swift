@@ -10,11 +10,11 @@ import SwiftUI
 struct ChatListCell: View {
     @EnvironmentObject var persistence: Persistence
     @EnvironmentObject var network: NetworkStatus
-    @ObservedObject var thread: EChat
+    @Binding var thread: EChat
 
     var body: some View {
         let navLink = NavigationLink("") {
-            Chat(thread: thread)
+            Chat(thread: $thread)
             .navigationTitle(thread.name ?? "")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -47,7 +47,7 @@ struct ChatListCell: View {
         .swipeActions(edge: .leading) {
             Button(!thread.pinned ? "Pin" : "Unpin") {
                 thread.pinned.toggle()
-                persistence.saveContext()
+                persistence.update(chat: thread)
             }.tint(.gray)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
@@ -64,7 +64,7 @@ struct ChatListCell: View {
     }
     
     var lastMessagePreview: some View {
-        let lastMessage = thread.messageList
+        let lastMessage = thread.sortedMessages
             .filter { $0.source == .USER }
             .last
         

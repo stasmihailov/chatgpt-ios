@@ -43,12 +43,15 @@ final class AppButtons {
 }
 
 fileprivate struct NewChatButton: View {
+    @EnvironmentObject var persistence: Persistence
+    
     @State private var newChat: EChat? = nil
     @State private var isActive = false
 
     var body: some View {
         Button(action: {
-            newChat = Persistence.shared.newChat()
+            newChat = EChat.new()
+            persistence.add(chat: newChat!)
             isActive = true
         }, label: {
             Image(systemName: "square.and.pencil")
@@ -74,12 +77,10 @@ fileprivate struct NewChatNavigationLink: View {
     }
     
     func newChatX() -> some View {
-        Group {
-            if newChat != nil {
-                Chat(thread: newChat!)
-            } else {
-                EmptyView()
-            }
+        guard let newChat = newChat else {
+            return EmptyView()
         }
+        
+        return Chat(thread: newChat)
     }
 }

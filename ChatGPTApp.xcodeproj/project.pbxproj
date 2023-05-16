@@ -52,7 +52,6 @@
 		8F96531D29FADDA60051F2FF /* LandingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96531A29FADDA60051F2FF /* LandingUITests.swift */; };
 		8F96AC722A0DB5F400A00A03 /* TestPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F96AC712A0DB5F400A00A03 /* TestPreview.swift */; };
 		8FF238D629F1622900CE47D7 /* Api.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF238D529F1622900CE47D7 /* Api.swift */; };
-		8FF2391429F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 8FF2391229F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld */; };
 		8FF2391629F1B13200CE47D7 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF2391529F1B13200CE47D7 /* Persistence.swift */; };
 		8FFC5D7029FEF937001CED98 /* ChatListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFC5D6F29FEF937001CED98 /* ChatListCell.swift */; };
 		8FFC5D7329FEFC0B001CED98 /* ChatInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FFC5D7229FEFC0B001CED98 /* ChatInput.swift */; };
@@ -114,7 +113,6 @@
 		8F96AC702A0DA73000A00A03 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8F96AC712A0DB5F400A00A03 /* TestPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestPreview.swift; sourceTree = "<group>"; };
 		8FF238D529F1622900CE47D7 /* Api.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Api.swift; path = ../Api.swift; sourceTree = "<group>"; };
-		8FF2391329F1B10100CE47D7 /* ChatGPTApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChatGPTApp.xcdatamodel; sourceTree = "<group>"; };
 		8FF2391529F1B13200CE47D7 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		8FFC5D6F29FEF937001CED98 /* ChatListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatListCell.swift; sourceTree = "<group>"; };
 		8FFC5D7229FEFC0B001CED98 /* ChatInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInput.swift; sourceTree = "<group>"; };
@@ -181,7 +179,6 @@
 				8F1B58522A06CA8E00C95F43 /* System.swift */,
 				8F0E821329ED9D8200047583 /* ChatGPTApp.swift */,
 				8F0E821529ED9D8200047583 /* AppBody.swift */,
-				8FF2391229F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld */,
 				8F0E821729ED9D8300047583 /* Assets.xcassets */,
 				8F1BDB8E2A0C47F600F372DF /* GoogleService-Info.plist */,
 				8F0E821929ED9D8300047583 /* Preview Content */,
@@ -446,7 +443,6 @@
 				8F2F4DE52A08496F0073609C /* SelectableText.swift in Sources */,
 				8F033F1F2A08EE6400D5AD40 /* ChatMessage.swift in Sources */,
 				8F1BDBA62A0D94D100F372DF /* AuthComponents.swift in Sources */,
-				8FF2391429F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld in Sources */,
 				8F0E824329EEE07C00047583 /* AppSettings.swift in Sources */,
 				8F1B58532A06CA8E00C95F43 /* System.swift in Sources */,
 				8F0E825029EF029B00047583 /* AppColors.swift in Sources */,
@@ -854,19 +850,6 @@
 			productName = GoogleSignInSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
-
-/* Begin XCVersionGroup section */
-		8FF2391229F1B10100CE47D7 /* ChatGPTApp.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				8FF2391329F1B10100CE47D7 /* ChatGPTApp.xcdatamodel */,
-			);
-			currentVersion = 8FF2391329F1B10100CE47D7 /* ChatGPTApp.xcdatamodel */;
-			path = ChatGPTApp.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 8F0E820829ED9D8200047583 /* Project object */;
 }

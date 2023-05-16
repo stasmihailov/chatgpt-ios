@@ -6,8 +6,6 @@
 //
 //
 
-import Foundation
-import CoreData
 import Combine
 import SwiftUI
 
@@ -15,84 +13,125 @@ class LWMsg: ObservableObject {
     @Published var text: String
 
     var time: Date
-    var source: EChatMsgSource
+    var source: EMsgSource
     
-    init(text: String = "", time: Date = Date(), source: EChatMsgSource) {
+    init(text: String = "", time: Date = Date(), source: EMsgSource) {
         self.text = text
         self.time = time
         self.source = source
     }
     
-    func reset(source: EChatMsgSource) {
+    func reset(source: EMsgSource) {
         self.text = ""
         self.time = Date()
         self.source = source
     }
     
-    static func from(_ chatMsg: EChatMsg) -> LWMsg {
+    static func from(_ chatMsg: EMsg) -> LWMsg {
         var msg = LWMsg(source: chatMsg.source)
-        msg.text = chatMsg.text!
-        msg.time = chatMsg.time!
+        msg.text = chatMsg.text
+        msg.time = chatMsg.time
         
         return msg
     }
 }
 
-@objc(EChat)
-public class EChat: NSManagedObject {
-    var nextMessage: EChatMsg? = nil
-    var modelBinding: Binding<String> {
-        Binding<String>(
-            get: { self.model ?? "" },
-            set: { self.model = $0 }
+public struct EChat: Identifiable, Codable, Hashable {
+    public var id: String
+    var model: String
+    var name: String
+    var pinned: Bool
+    var messages: [EMsg]
+
+    static func new() -> EChat {
+        return EChat(
+            id: "...",
+            model: "gpt-3.5-turbo",
+            name: "Empty chat",
+            pinned: false,
+            messages: []
         )
     }
     
     var lastMessageTime: Date {
         get {
-            return self.messageList.last?.time ?? Date.distantPast
+            return self.messages.last?.time ?? Date.distantPast
         }
     }
     
-    var messageList: [EChatMsg] {
-        get {
-            return self.messages?
-                .compactMap { $0 as? EChatMsg }
-                .sorted(by: { $0.time! < $1.time! })
-            ?? []
+    var sortedMessages: [EMsg] {
+    get {
+            self.messages.sorted(by: { $0.time < $1.time })
         }
     }
-    
-    func newMessage(source: EChatMsgSource, text: String) -> EChatMsg {
-        let persistence = Persistence.shared
-        
-        let msg = persistence.new(EChatMsg.self)
-        msg.source = source
-        msg.text = text
-        msg.time = Date()
-        msg.chat = self
 
-        persistence.saveContext()
-
-        return msg
-    }
-
-    static func ==(lhs: EChat, rhs: EChat) -> Bool {
+    public static func ==(lhs: EChat, rhs: EChat) -> Bool {
         return lhs.id == rhs.id
     }
 }
 
-enum EChatMsgSource: String {
-    case USER, ASSISTANT;
+fileprivate let decoder = JSONDecoder()
+fileprivate let encoder = JSONEncoder()
+
+extension EChat {
+    func encode() -> [String: Any] {
+        guard let data = try? encoder.encode(self) else {
+            print("Error: cannot convert EChat to data.")
+            return [:]
+        }
+        
+        guard let dictionary = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
+            print("Error: cannot convert data to dictionary.")
+            return [:]
+        }
+    
+        return dictionary
+    }
+    
+    static func decode(from data: [String: Any]) -> EChat? {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: data, options: []) else {
+            print("Error: cannot convert dictionary to data.")
+            return nil
+        }
+
+        guard let chat = try? decoder.decode(EChat.self, from: jsonData) else {
+            print("Error: cannot decode data to EChat.")
+            return nil
+        }
+        
+        return chat
+    }
 }
 
-let userDateFormatter = {
+public struct EMsg: Identifiable, Codable, Hashable {
+    public var id: String
+    var source: EMsgSource
+    var text: String
+    var time: Date
+    
+    init(source: EMsgSource, text: String) {
+        self.id = "..."
+        self.source = source
+        self.text = text
+        self.time = Date()
+    }
+    
+    public static func ==(lhs: EMsg, rhs: EMsg) -> Bool {
+        return lhs.id == rhs.id
+    }
+}
+
+enum EMsgSource: String, Codable {
+    case USER, ASSISTANT
+}
+
+fileprivate let userDateFormatter = {
     let fmt = DateFormatter()
     fmt.dateFormat = "dd MMM"
     return fmt
 }()
 
-let userTimeFormatter = {
+fileprivate let userTimeFormatter = {
     let fmt = DateFormatter()
     fmt.timeStyle = .short
     return fmt
@@ -108,21 +147,5 @@ extension Date {
         } else {
             return userTimeFormatter.string(from: self)
         }
-    }
-}
-
-@objc(EChatMsg)
-public class EChatMsg: NSManagedObject {
-    var source: EChatMsgSource {
-        get {
-            return EChatMsgSource(rawValue: self.sourceRaw!)!
-        } set {
-            self.sourceRaw = newValue.rawValue
-        }
-    }
-
-    override public func willChangeValue(forKey key: String) {
-        super.willChangeValue(forKey: key)
-        objectWillChange.send()
     }
 }

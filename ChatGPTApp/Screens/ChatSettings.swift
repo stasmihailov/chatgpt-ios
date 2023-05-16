@@ -9,15 +9,15 @@ import SwiftUI
 
 struct ChatSettings: View {
     @EnvironmentObject var persistence: Persistence
-    @ObservedObject var chat: EChat
+    @Binding var chat: EChat
 
-    @State private var chatNameState: String
-    @State private var modelState: String
+    @State private var chatNameState: String = ""
+    @State private var modelState: String = ""
 
-    init(chat: EChat) {
-        self.chat = chat
-        self.chatNameState = chat.name ?? ""
-        self.modelState = chat.modelBinding.wrappedValue
+    init(chat: Binding<EChat>) {
+        self._chat = chat
+        self.chatNameState = chat.name.wrappedValue
+        self.modelState = chat.model.wrappedValue
     }
     
     var body: some View {
@@ -45,7 +45,7 @@ struct ChatSettings: View {
             chat.name = chatNameState
             chat.model = modelState
 
-            persistence.saveContext()
+            persistence.update(chat: chat)
         }
     
         VStack {
@@ -66,17 +66,17 @@ struct ChatSettings: View {
     }
 }
 
-struct ChatSettings_Previews: PreviewProvider {
-    struct ChatSettingsWrapper: View {
-        @StateObject var chat: EChat = Persistence.shared.fetchChats()[0]
-
-        var body: some View {
-            ChatSettings(chat: chat)
-        }
-    }
-
-    static var previews: some View {
-        ChatSettingsWrapper()
-            .environmentObject(Persistence.shared)
-    }
-}
+//struct ChatSettings_Previews: PreviewProvider {
+//    struct ChatSettingsWrapper: View {
+//        @State var chat: EChat = Persistence.shared.fetchChats()[0]
+//
+//        var body: some View {
+//            ChatSettings(chat: chat)
+//        }
+//    }
+//
+//    static var previews: some View {
+//        ChatSettingsWrapper()
+//            .environmentObject(Persistence.shared)
+//    }
+//}
