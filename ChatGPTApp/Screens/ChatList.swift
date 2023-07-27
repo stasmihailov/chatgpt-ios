@@ -16,6 +16,7 @@ struct ChatList: View {
     var chats: [EChat] {
         get {
             return persistence.chats
+                .filter { !$0.messages.isEmpty }
                 .sorted { $0.lastMessageTime > $1.lastMessageTime }
                 .sorted { $0.pinned && !$1.pinned }
         }
@@ -52,15 +53,13 @@ struct ChatList: View {
             
             List {
                 Section {
-                    ForEach(pinnedChats) { (chat: EChat) in
-//                        ChatListCell(thread: chat)
-                        Text("ok")
+                    ForEach(pinnedChats) { chat in
+                        ChatListCell(thread: chat)
                     }
                 }
                 Section {
                     ForEach(unpinnedChats) { chat in
-//                        ChatListCell(thread: chat)
-                        Text("ok")
+                        ChatListCell(thread: chat)
                     }
                 } header: {
                     if !pinnedChats.isEmpty && !unpinnedChats.isEmpty {

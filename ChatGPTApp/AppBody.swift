@@ -57,6 +57,7 @@ struct AppBody: View {
     @StateObject var auth = AppAuthentication()
     var keychain: KeychainManagerWrapper
     var api: OpenAIApiWrapper
+    let persistence = Persistence()
     
     init() {
         keychain = KeychainManagerWrapper(KeychainManagerImpl())
@@ -68,9 +69,8 @@ struct AppBody: View {
         AppContainer()
             .environmentObject(keychain)
             .environmentObject(api)
-            .environmentObject(Persistence.shared)
+            .environmentObject(persistence)
             .environmentObject(auth)
-            .environment(\.managedObjectContext, Persistence.shared.container.viewContext)
             .environmentObject(NetworkStatus())
     }
 }

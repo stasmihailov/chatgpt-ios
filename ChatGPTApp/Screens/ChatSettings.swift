@@ -9,15 +9,19 @@ import SwiftUI
 
 struct ChatSettings: View {
     @EnvironmentObject var persistence: Persistence
-    @Binding var chat: EChat
+    
+    @Binding var name: String
+    @Binding var model: String
 
     @State private var chatNameState: String = ""
     @State private var modelState: String = ""
 
-    init(chat: Binding<EChat>) {
-        self._chat = chat
-        self.chatNameState = chat.name.wrappedValue
-        self.modelState = chat.model.wrappedValue
+    init(name: Binding<String>, model: Binding<String>) {
+        self._name = name
+        self._model = model
+        
+        self.chatNameState = name.wrappedValue
+        self.modelState = model.wrappedValue
     }
     
     var body: some View {
@@ -42,10 +46,8 @@ struct ChatSettings: View {
         }
         
         let doneButton = Button("Done") {
-            chat.name = chatNameState
-            chat.model = modelState
-
-            persistence.update(chat: chat)
+            name = chatNameState
+            model = modelState
         }
     
         VStack {

@@ -27,7 +27,8 @@ struct Chat: View {
     @State var alertText = ""
     @State var chatSettingsIsActive = false
 
-    @Binding var thread: EChat
+    var thread: EChat
+    var threadB: BChat { get { thread.bind(to: persistence) } }
 
     var body: some View {
         let chatInput = ChatInput(message: $message) {
@@ -45,7 +46,7 @@ struct Chat: View {
         ZStack {
             if thread.messages.isEmpty {
                 VStack {
-                    ChatModelPicker(model: $thread.model)
+                    ChatModelPicker(model: threadB.model)
                         .padding(.bottom, 64)
                     Text("Enter a new message to start the chat. Select a model above (you can change it later)")
                         .foregroundColor(Color(UIColor.systemGray))
@@ -56,7 +57,7 @@ struct Chat: View {
                 
             } else {
                 ExistingChatBody(
-                    thread: $thread,
+                    thread: thread,
                     bottomPadding: chatInput.minHeight - 2
                 )
                 .frame(maxWidth: .infinity)
@@ -85,7 +86,7 @@ struct Chat: View {
             self.chatSettingsIsActive = true
         }
         .background(NavigationLink(
-            destination: ChatSettings(chat: $thread),
+            destination: ChatSettings(name: threadB.name, model: threadB.model),
             isActive: $chatSettingsIsActive) {
                 EmptyView()
             }
@@ -108,12 +109,11 @@ struct Chat: View {
         }
 
         let msg = message
-        thread.messages.append(EMsg(source: .USER, text: msg))
-        persistence.update(chat: thread)
+        threadB.messages.wrappedValue = thread.messages + [EMsg(source: .USER, text: msg)]
         message = ""
         
         var lastResponse = EMsg(source: .ASSISTANT, text: "")
-        thread.messages.append(lastResponse)
+        threadB.messages.wrappedValue = thread.messages + [lastResponse]
         persistence.update(chat: thread)
 
         api.chatCompletion(for: thread, token: token)
@@ -135,7 +135,7 @@ struct Chat: View {
 }
 
 struct ExistingChatBody: View {
-    @Binding var thread: EChat
+    var thread: EChat
     var bottomPadding: CGFloat
     
     var body: some View {
@@ -183,7 +183,7 @@ struct Chat_Previews: PreviewProvider {
                 let api = OpenAIApiWrapper(OpenAIApiImpl(keychain: keychain))
                 var thread = persistence.chats[0]
                 
-                Chat(thread: .init(get: { thread }, set: { thread = $0 }))
+                Chat(thread: thread)
                     .environmentObject(keychain)
                     .environmentObject(api)
                     .environmentObject(persistence)

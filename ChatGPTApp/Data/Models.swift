@@ -42,7 +42,14 @@ public struct EChat: Identifiable, Codable, Hashable {
     var name: String
     var pinned: Bool
     var messages: [EMsg]
+    
+    var lastMessageTime: Date { get { return self.messages.last?.time ?? Date.distantPast } }
+    var sortedMessages: [EMsg] { get { self.messages.sorted(by: { $0.time < $1.time }) } }
 
+    func bind(to persistence: Persistence) -> BChat {
+        return BChat(persistence: persistence, obj: self)
+    }
+    
     static func new() -> EChat {
         return EChat(
             id: "...",
@@ -52,54 +59,9 @@ public struct EChat: Identifiable, Codable, Hashable {
             messages: []
         )
     }
-    
-    var lastMessageTime: Date {
-        get {
-            return self.messages.last?.time ?? Date.distantPast
-        }
-    }
-    
-    var sortedMessages: [EMsg] {
-    get {
-            self.messages.sorted(by: { $0.time < $1.time })
-        }
-    }
 
     public static func ==(lhs: EChat, rhs: EChat) -> Bool {
         return lhs.id == rhs.id
-    }
-}
-
-fileprivate let decoder = JSONDecoder()
-fileprivate let encoder = JSONEncoder()
-
-extension EChat {
-    func encode() -> [String: Any] {
-        guard let data = try? encoder.encode(self) else {
-            print("Error: cannot convert EChat to data.")
-            return [:]
-        }
-        
-        guard let dictionary = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
-            print("Error: cannot convert data to dictionary.")
-            return [:]
-        }
-    
-        return dictionary
-    }
-    
-    static func decode(from data: [String: Any]) -> EChat? {
-        guard let jsonData = try? JSONSerialization.data(withJSONObject: data, options: []) else {
-            print("Error: cannot convert dictionary to data.")
-            return nil
-        }
-
-        guard let chat = try? decoder.decode(EChat.self, from: jsonData) else {
-            print("Error: cannot decode data to EChat.")
-            return nil
-        }
-        
-        return chat
     }
 }
 
@@ -123,29 +85,4 @@ public struct EMsg: Identifiable, Codable, Hashable {
 
 enum EMsgSource: String, Codable {
     case USER, ASSISTANT
-}
-
-fileprivate let userDateFormatter = {
-    let fmt = DateFormatter()
-    fmt.dateFormat = "dd MMM"
-    return fmt
-}()
-
-fileprivate let userTimeFormatter = {
-    let fmt = DateFormatter()
-    fmt.timeStyle = .short
-    return fmt
-}()
-
-extension Date {
-    var userString: String {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        let isBeforeToday = calendar.compare(self, to: today, toGranularity: .day) == .orderedAscending
-        if isBeforeToday {
-            return userDateFormatter.string(from: self)
-        } else {
-            return userTimeFormatter.string(from: self)
-        }
-    }
 }

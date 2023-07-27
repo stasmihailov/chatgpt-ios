@@ -10,12 +10,13 @@ import SwiftUI
 struct ChatListCell: View {
     @EnvironmentObject var persistence: Persistence
     @EnvironmentObject var network: NetworkStatus
-    @Binding var thread: EChat
+    var thread: EChat
+    var threadB: BChat { get { thread.bind(to: persistence) } }
 
     var body: some View {
         let navLink = NavigationLink("") {
-            Chat(thread: $thread)
-            .navigationTitle(thread.name ?? "")
+            Chat(thread: thread)
+            .navigationTitle(thread.name)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -32,7 +33,7 @@ struct ChatListCell: View {
             chatAvatar
             VStack {
                 HStack {
-                    Text(thread.name ?? "").font(.headline)
+                    Text(thread.name).font(.headline)
                     Spacer()
                     Text(thread.lastMessageTime.userString).subheadline()
                 }.padding(.bottom, 2)
@@ -46,8 +47,7 @@ struct ChatListCell: View {
         .background(navLink)
         .swipeActions(edge: .leading) {
             Button(!thread.pinned ? "Pin" : "Unpin") {
-                thread.pinned.toggle()
-                persistence.update(chat: thread)
+                threadB.pinned.wrappedValue.toggle()
             }.tint(.gray)
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
