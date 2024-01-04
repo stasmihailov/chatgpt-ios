@@ -1,4 +1,4 @@
-An app which mimicks ChatGPT. Works with your own API key, so no need to pay $20/month. Only has text mode. Last working version is tag 1.0.8. Enjoy
+An app which mimicks ChatGPT. Works with your own API key, so no need to pay $20/month. Only has text mode. Last working version is tag `1.0.8`. Enjoy
 
 This is what the app looks like (no surprises here):
 
